@@ -26,8 +26,14 @@ for /d %%i in (C:\ActivePerl*) do move %%i C:\Perl522
 :: Tcl
 appveyor DownloadFile http://downloads.activestate.com/ActiveTcl/releases/8.6.4.1/ActiveTcl8.6.4.1.299124-win32-ix86-threaded.exe -FileName tcl.exe
 start /wait tcl.exe --directory C:\Tcl
+:: Ruby
+git clone https://github.com/ruby/ruby.git -b ruby_2_2 --depth 1 -q ../ruby
+pushd ..\ruby
+call win32\configure.bat
+nmake .config.h.time
+popd
 
-path C:\Perl522\perl\bin;%path%;C:\Lua;C:\Tcl\bin
+path C:\Perl522\perl\bin;%path%;C:\Lua;C:\Tcl\bin;C:\Ruby22\bin
 @echo off
 goto :eof
 
@@ -46,8 +52,14 @@ for /d %%i in (C:\ActivePerl*) do move %%i C:\Perl522
 :: Tcl
 appveyor DownloadFile http://downloads.activestate.com/ActiveTcl/releases/8.6.4.1/ActiveTcl8.6.4.1.299124-win32-x86_64-threaded.exe -FileName tcl.exe
 start /wait tcl.exe --directory C:\Tcl
+:: Ruby
+git clone https://github.com/ruby/ruby.git -b ruby_2_2 --depth 1 -q ../ruby
+pushd ..\ruby
+call win32\configure.bat
+nmake .config.h.time
+popd
 
-path C:\Perl522\perl\bin;%path%;C:\Lua;C:\Tcl\bin
+path C:\Perl522\perl\bin;%path%;C:\Lua;C:\Tcl\bin;C:\Ruby22-x64\bin
 @echo off
 goto :eof
 
@@ -66,6 +78,9 @@ nmake -f Make_mvc2.mak CPU=i386 ^
 	PYTHON3_VER=34 DYNAMIC_PYTHON3=yes PYTHON3=C:\Python34 ^
 	LUA_VER=53 DYNAMIC_LUA=yes LUA=C:\Lua ^
 	TCL_VER=86 DYNAMIC_TCL=yes TCL=C:\Tcl ^
+	RUBY=C:\projects\ruby DYNAMIC_RUBY=yes RUBY_VER=22 RUBY_VER_LONG=2.2.0 ^
+	RUBY_INSTALL_NAME=msvcrt-ruby$(RUBY_API_VER) RUBY_PLATFORM=i386-mswin32_100 ^
+	RUBY_INC="/I $(RUBY)\include /I $(RUBY)\.ext\include\$(RUBY_PLATFORM)" ^
 	WINVER=0x500 ^
 	|| exit 1
 :: Build CUI version
@@ -77,6 +92,9 @@ nmake -f Make_mvc2.mak CPU=i386 ^
 	PYTHON3_VER=34 DYNAMIC_PYTHON3=yes PYTHON3=C:\Python34 ^
 	LUA_VER=53 DYNAMIC_LUA=yes LUA=C:\Lua ^
 	TCL_VER=86 DYNAMIC_TCL=yes TCL=C:\Tcl ^
+	RUBY=C:\projects\ruby DYNAMIC_RUBY=yes RUBY_VER=22 RUBY_VER_LONG=2.2.0 ^
+	RUBY_INSTALL_NAME=msvcrt-ruby$(RUBY_API_VER) RUBY_PLATFORM=i386-mswin32_100 ^
+	RUBY_INC="/I $(RUBY)\include /I $(RUBY)\.ext\include\$(RUBY_PLATFORM)" ^
 	WINVER=0x500 ^
 	|| exit 1
 :: Build translations
@@ -102,6 +120,9 @@ nmake -f Make_mvc2.mak CPU=AMD64 ^
 	PYTHON3_VER=34 DYNAMIC_PYTHON3=yes PYTHON3=C:\Python34-x64 ^
 	LUA_VER=53 DYNAMIC_LUA=yes LUA=C:\Lua ^
 	TCL_VER=86 DYNAMIC_TCL=yes TCL=C:\Tcl ^
+	RUBY=C:\projects\ruby DYNAMIC_RUBY=yes RUBY_VER=22 RUBY_VER_LONG=2.2.0 ^
+	RUBY_INSTALL_NAME=msvcrt-ruby$(RUBY_API_VER) RUBY_PLATFORM=x64-mswin64_100 ^
+	RUBY_INC="/I $(RUBY)\include /I $(RUBY)\.ext\include\$(RUBY_PLATFORM)" ^
 	WINVER=0x500 ^
 	|| exit 1
 :: Build CUI version
@@ -113,6 +134,9 @@ nmake -f Make_mvc2.mak CPU=AMD64 ^
 	PYTHON3_VER=34 DYNAMIC_PYTHON3=yes PYTHON3=C:\Python34-x64 ^
 	LUA_VER=53 DYNAMIC_LUA=yes LUA=C:\Lua ^
 	TCL_VER=86 DYNAMIC_TCL=yes TCL=C:\Tcl ^
+	RUBY=C:\projects\ruby DYNAMIC_RUBY=yes RUBY_VER=22 RUBY_VER_LONG=2.2.0 ^
+	RUBY_INSTALL_NAME=msvcrt-ruby$(RUBY_API_VER) RUBY_PLATFORM=x64-mswin64_100 ^
+	RUBY_INC="/I $(RUBY)\include /I $(RUBY)\.ext\include\$(RUBY_PLATFORM)" ^
 	WINVER=0x500 ^
 	|| exit 1
 :: Build translations
