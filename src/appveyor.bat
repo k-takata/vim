@@ -35,7 +35,7 @@ goto :eof
 sed -e "s/\$(LINKARGS2)/\$(LINKARGS2) | sed -e 's#.*\\\\r.*##'/" Make_mvc.mak > Make_mvc2.mak
 :: Build GUI version
 nmake -f Make_mvc2.mak CPU=i386 ^
-	GUI=yes OLE=yes DIRECTX=yes ^
+	GUI=yes OLE=no DIRECTX=yes ^
 	FEATURES=HUGE IME=yes MBYTE=yes ICONV=yes DEBUG=no ^
 	PYTHON_VER=27 DYNAMIC_PYTHON=yes PYTHON=C:\Python27 ^
 	PYTHON3_VER=34 DYNAMIC_PYTHON3=yes PYTHON3=C:\Python34 ^
@@ -59,7 +59,7 @@ goto :eof
 sed -e "s/\$(LINKARGS2)/\$(LINKARGS2) | sed -e 's#.*\\\\r.*##'/" Make_mvc.mak > Make_mvc2.mak
 :: Build GUI version
 nmake -f Make_mvc2.mak CPU=AMD64 ^
-	GUI=yes OLE=yes DIRECTX=yes ^
+	GUI=yes OLE=no DIRECTX=yes ^
 	FEATURES=HUGE IME=yes MBYTE=yes ICONV=yes DEBUG=no ^
 	PYTHON_VER=27 DYNAMIC_PYTHON=yes PYTHON=C:\Python27-x64 ^
 	PYTHON3_VER=34 DYNAMIC_PYTHON3=yes PYTHON3=C:\Python34-x64 ^
