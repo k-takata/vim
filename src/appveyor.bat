@@ -55,6 +55,10 @@ nmake -f Make_mvc2.mak CPU=i386 ^
 	PYTHON3_VER=34 DYNAMIC_PYTHON3=yes PYTHON3=C:\Python34 ^
 	LUA_VER=53 DYNAMIC_LUA=yes LUA=C:\lua ^
 	WINVER=0x500
+:: Build translations
+pushd po
+nmake -f Make_mvc.mak GETTEXT_PATH=C:\cygwin\bin VIMRUNTIME=..\..\runtime install-all
+popd
 
 @echo off
 goto :eof
@@ -81,6 +85,10 @@ nmake -f Make_mvc2.mak CPU=AMD64 ^
 	PYTHON3_VER=34 DYNAMIC_PYTHON3=yes PYTHON3=C:\Python34-x64 ^
 	LUA_VER=53 DYNAMIC_LUA=yes LUA=C:\lua ^
 	WINVER=0x500
+:: Build translations
+pushd po
+nmake -f Make_mvc.mak GETTEXT_PATH=C:\cygwin\bin VIMRUNTIME=..\..\runtime install-all
+popd
 
 @echo off
 goto :eof
