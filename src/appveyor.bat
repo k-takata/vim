@@ -18,10 +18,13 @@ exit 1
 reg copy HKLM\SOFTWARE\Python\PythonCore\2.7 HKLM\SOFTWARE\Python\PythonCore\2.7-32 /s /reg:32
 :: Lua
 curl -L "http://downloads.sourceforge.net/project/luabinaries/5.3.2/Windows%%20Libraries/Dynamic/lua-5.3.2_Win32_dllw4_lib.zip" -o lua.zip
-7z x lua.zip -oC:\lua
+7z x lua.zip -oC:\Lua
 :: Perl
 appveyor DownloadFile http://downloads.activestate.com/ActivePerl/releases/5.22.0.2200/ActivePerl-5.22.0.2200-MSWin32-x86-64int-299195.msi -F perl.msi
 msiexec /i /quiet perl.msi TARGETDIR=C:\Perl522
+:: Tcl
+appveyor DownloadFile http://downloads.activestate.com/ActiveTcl/releases/8.6.4.1/ActiveTcl8.6.4.1.299124-win32-ix86-threaded.exe -F tcl.exe
+start /wait tcl.exe --directory C:\Tcl
 
 @echo off
 goto :eof
@@ -33,10 +36,13 @@ goto :eof
 reg copy HKLM\SOFTWARE\Python\PythonCore\2.7 HKLM\SOFTWARE\Python\PythonCore\2.7-32 /s /reg:64
 :: Lua
 curl -L "http://downloads.sourceforge.net/project/luabinaries/5.3.2/Windows%%20Libraries/Dynamic/lua-5.3.2_Win64_dllw4_lib.zip" -o lua.zip
-7z x lua.zip -oC:\lua
+7z x lua.zip -oC:\Lua
 :: Perl
 appveyor DownloadFile http://downloads.activestate.com/ActivePerl/releases/5.22.0.2200/ActivePerl-5.22.0.2200-MSWin32-x64-299195.msi -F perl.msi
 msiexec /i /quiet perl.msi TARGETDIR=C:\Perl522
+:: Tcl
+appveyor DownloadFile http://downloads.activestate.com/ActiveTcl/releases/8.6.4.1/ActiveTcl8.6.4.1.299124-win32-x86_64-threaded.exe -F tcl.exe
+start /wait tcl.exe --directory C:\Tcl
 
 @echo off
 goto :eof
@@ -54,7 +60,8 @@ nmake -f Make_mvc2.mak CPU=i386 ^
 	PERL_VER=522 DYNAMIC_PERL=yes PERL=C:\Perl522 ^
 	PYTHON_VER=27 DYNAMIC_PYTHON=yes PYTHON=C:\Python27 ^
 	PYTHON3_VER=34 DYNAMIC_PYTHON3=yes PYTHON3=C:\Python34 ^
-	LUA_VER=53 DYNAMIC_LUA=yes LUA=C:\lua ^
+	LUA_VER=53 DYNAMIC_LUA=yes LUA=C:\Lua ^
+	TCL_VER=86 DYNAMIC_TCL=yes TCL=C:\Tcl ^
 	WINVER=0x500
 :: Build CUI version
 nmake -f Make_mvc2.mak CPU=i386 ^
@@ -63,7 +70,8 @@ nmake -f Make_mvc2.mak CPU=i386 ^
 	PERL_VER=522 DYNAMIC_PERL=yes PERL=C:\Perl522 ^
 	PYTHON_VER=27 DYNAMIC_PYTHON=yes PYTHON=C:\Python27 ^
 	PYTHON3_VER=34 DYNAMIC_PYTHON3=yes PYTHON3=C:\Python34 ^
-	LUA_VER=53 DYNAMIC_LUA=yes LUA=C:\lua ^
+	LUA_VER=53 DYNAMIC_LUA=yes LUA=C:\Lua ^
+	TCL_VER=86 DYNAMIC_TCL=yes TCL=C:\Tcl ^
 	WINVER=0x500
 :: Build translations
 pushd po
@@ -86,7 +94,8 @@ nmake -f Make_mvc2.mak CPU=AMD64 ^
 	PERL_VER=522 DYNAMIC_PERL=yes PERL=C:\Perl522 ^
 	PYTHON_VER=27 DYNAMIC_PYTHON=yes PYTHON=C:\Python27-x64 ^
 	PYTHON3_VER=34 DYNAMIC_PYTHON3=yes PYTHON3=C:\Python34-x64 ^
-	LUA_VER=53 DYNAMIC_LUA=yes LUA=C:\lua ^
+	LUA_VER=53 DYNAMIC_LUA=yes LUA=C:\Lua ^
+	TCL_VER=86 DYNAMIC_TCL=yes TCL=C:\Tcl ^
 	WINVER=0x500
 :: Build CUI version
 nmake -f Make_mvc2.mak CPU=AMD64 ^
@@ -95,7 +104,8 @@ nmake -f Make_mvc2.mak CPU=AMD64 ^
 	PERL_VER=522 DYNAMIC_PERL=yes PERL=C:\Perl522 ^
 	PYTHON_VER=27 DYNAMIC_PYTHON=yes PYTHON=C:\Python27-x64 ^
 	PYTHON3_VER=34 DYNAMIC_PYTHON3=yes PYTHON3=C:\Python34-x64 ^
-	LUA_VER=53 DYNAMIC_LUA=yes LUA=C:\lua ^
+	LUA_VER=53 DYNAMIC_LUA=yes LUA=C:\Lua ^
+	TCL_VER=86 DYNAMIC_TCL=yes TCL=C:\Tcl ^
 	WINVER=0x500
 :: Build translations
 pushd po

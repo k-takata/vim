@@ -38,7 +38,7 @@ after_build:
   - 7z a ..\gvim_%ARCH%.zip ..\runtime\*
 
 test_script:
-  - path %path%;C:\lua;C:\Perl522\bin
+  - path %path%;C:\Lua;C:\Perl522\bin;C:\Tcl\bin
   - cd testdir
   - nmake -f Make_dos.mak VIMPROG=..\gvim
   - nmake -f Make_dos.mak VIMPROG=..\vim
