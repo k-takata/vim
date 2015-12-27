@@ -8,11 +8,14 @@
 # Use at your own risk but with care, it could even kill your canary.
 #
 
+# TODO: GNU gettext 0.19.5.1 cannot process ja.sjis and zh_CN.cp936.
+
 ifndef VIMRUNTIME
 VIMRUNTIME = ../../runtime
 endif
 
-LANGUAGES =	af \
+LANGUAGES = \
+		af \
 		ca \
 		cs \
 		cs.cp1250 \
@@ -25,12 +28,15 @@ LANGUAGES =	af \
 		ga \
 		it \
 		ja \
-		ja.sjis \
+		ja.euc-jp \
 		ko \
 		ko.UTF-8 \
+		nb \
+		nl \
 		no \
 		pl \
 		pl.cp1250 \
+		pl.UTF-8 \
 		pt_BR \
 		ru \
 		ru.cp1251 \
@@ -42,11 +48,11 @@ LANGUAGES =	af \
 		vi \
 		zh_CN \
 		zh_CN.UTF-8 \
-		zh_CN.cp936 \
 		zh_TW \
 		zh_TW.UTF-8 \
 
-MOFILES =	af.mo \
+MOFILES = \
+		af.mo \
 		ca.mo \
 		cs.cp1250.mo \
 		cs.mo \
@@ -58,13 +64,16 @@ MOFILES =	af.mo \
 		fr.mo \
 		ga.mo \
 		it.mo \
+		ja.euc-jp.mo \
 		ja.mo \
-		ja.sjis.mo \
 		ko.mo \
 		ko.UTF-8.mo \
+		nb.mo \
+		nl.mo \
 		no.mo \
 		pl.cp1250.mo \
 		pl.mo \
+		pl.UTF-8.mo \
 		pt_BR.mo \
 		ru.cp1251.mo \
 		ru.mo \
@@ -74,11 +83,10 @@ MOFILES =	af.mo \
 		uk.cp1251.mo \
 		uk.mo \
 		vi.mo \
-		zh_CN.UTF-8.mo \
-		zh_CN.cp936.mo \
 		zh_CN.mo \
-		zh_TW.UTF-8.mo \
+		zh_CN.UTF-8.mo \
 		zh_TW.mo \
+		zh_TW.UTF-8.mo \
 
 PACKAGE = vim
 
