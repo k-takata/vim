@@ -57,4 +57,5 @@ deploy:
     artifact: /gVim/
     draft: false
     prerelease: false
-    appveyor-repo-tag: true
+    on:
+      appveyor-repo-tag: true
