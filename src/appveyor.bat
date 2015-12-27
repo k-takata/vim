@@ -17,6 +17,7 @@ exit 1
 :: Work around for Python 2.7.11
 reg copy HKLM\SOFTWARE\Python\PythonCore\2.7 HKLM\SOFTWARE\Python\PythonCore\2.7-32 /s /reg:32
 :: Lua
+:: Appveyor command doesn't seem to work well when downloading from sf.net.
 curl -L "http://downloads.sourceforge.net/project/luabinaries/5.3.2/Windows%%20Libraries/Dynamic/lua-5.3.2_Win32_dllw4_lib.zip" -o lua.zip
 7z x lua.zip -oC:\Lua > nul
 :: Perl
@@ -27,12 +28,15 @@ for /d %%i in (C:\ActivePerl*) do move %%i C:\Perl522
 appveyor DownloadFile http://downloads.activestate.com/ActiveTcl/releases/8.6.4.1/ActiveTcl8.6.4.1.299124-win32-ix86-threaded.exe -FileName tcl.exe
 start /wait tcl.exe --directory C:\Tcl
 :: Ruby
+:: RubyInstaller is built by MinGW, so we cannot use header files from it.
+:: Download the source files and generate config.h for MSVC.
 git clone https://github.com/ruby/ruby.git -b ruby_2_2 --depth 1 -q ../ruby
 pushd ..\ruby
 call win32\configure.bat
 nmake .config.h.time
 popd
 
+:: Update PATH
 path C:\Perl522\perl\bin;%path%;C:\Lua;C:\Tcl\bin;C:\Ruby22\bin
 @echo off
 goto :eof
@@ -43,6 +47,7 @@ goto :eof
 :: Work around for Python 2.7.11
 reg copy HKLM\SOFTWARE\Python\PythonCore\2.7 HKLM\SOFTWARE\Python\PythonCore\2.7-32 /s /reg:64
 :: Lua
+:: Appveyor command doesn't seem to work well when downloading from sf.net.
 curl -L "http://downloads.sourceforge.net/project/luabinaries/5.3.2/Windows%%20Libraries/Dynamic/lua-5.3.2_Win64_dllw4_lib.zip" -o lua.zip
 7z x lua.zip -oC:\Lua > nul
 :: Perl
@@ -53,12 +58,15 @@ for /d %%i in (C:\ActivePerl*) do move %%i C:\Perl522
 appveyor DownloadFile http://downloads.activestate.com/ActiveTcl/releases/8.6.4.1/ActiveTcl8.6.4.1.299124-win32-x86_64-threaded.exe -FileName tcl.exe
 start /wait tcl.exe --directory C:\Tcl
 :: Ruby
+:: RubyInstaller is built by MinGW, so we cannot use header files from it.
+:: Download the source files and generate config.h for MSVC.
 git clone https://github.com/ruby/ruby.git -b ruby_2_2 --depth 1 -q ../ruby
 pushd ..\ruby
 call win32\configure.bat
 nmake .config.h.time
 popd
 
+:: Update PATH
 path C:\Perl522\perl\bin;%path%;C:\Lua;C:\Tcl\bin;C:\Ruby22-x64\bin
 @echo off
 goto :eof
