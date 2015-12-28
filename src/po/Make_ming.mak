@@ -10,7 +10,9 @@
 # language (xx) and add it to the next three lines.
 #
 
-# TODO: GNU gettext 0.19.5.1 cannot process ja.sjis and zh_CN.cp936.
+ifndef VIMRUNTIME
+VIMRUNTIME = ..\..\runtime
+endif
 
 LANGUAGES = \
 		af \
@@ -27,6 +29,7 @@ LANGUAGES = \
 		it \
 		ja \
 		ja.euc-jp \
+		ja.sjis \
 		ko \
 		ko.UTF-8 \
 		nb \
@@ -45,6 +48,7 @@ LANGUAGES = \
 		uk.cp1251 \
 		vi \
 		zh_CN \
+		zh_CN.cp936 \
 		zh_CN.UTF-8 \
 		zh_TW \
 		zh_TW.UTF-8 \
@@ -64,6 +68,7 @@ MOFILES = \
 		it.mo \
 		ja.euc-jp.mo \
 		ja.mo \
+		ja.sjis.mo \
 		ko.mo \
 		ko.UTF-8.mo \
 		nb.mo \
@@ -82,6 +87,7 @@ MOFILES = \
 		uk.mo \
 		vi.mo \
 		zh_CN.mo \
+		zh_CN.cp936.mo \
 		zh_CN.UTF-8.mo \
 		zh_TW.mo \
 		zh_TW.UTF-8.mo \
@@ -94,9 +100,9 @@ PACKAGE = vim
 #GETTEXT_PATH = C:/gettext-0.10.35-w32/win32/Release/
 #GETTEXT_PATH = C:/cygwin/bin/
 
-MSGFMT = $(GETTEXT_PATH)msgfmt
-XGETTEXT = $(GETTEXT_PATH)xgettext
-MSGMERGE = $(GETTEXT_PATH)msgmerge
+MSGFMT = set OLD_PO_FILE_INPUT=yes && $(GETTEXT_PATH)msgfmt -v
+XGETTEXT = set OLD_PO_FILE_INPUT=yes && set OLD_PO_FILE_OUTPUT=yes && $(GETTEXT_PATH)xgettext
+MSGMERGE = set OLD_PO_FILE_INPUT=yes && set OLD_PO_FILE_OUTPUT=yes && $(GETTEXT_PATH)msgmerge
 
 MV = move
 CP = copy
