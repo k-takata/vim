@@ -10,6 +10,8 @@ environment:
 
 matrix:
   fast_finish: true
+  allow_failures:
+    - appveyor_repo_tag: true
 
 shallow_clone: true
 
@@ -51,4 +53,3 @@ deploy:
     prerelease: false
     on:
       appveyor_repo_tag: true
-      build_skip: true
