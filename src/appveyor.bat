@@ -240,7 +240,7 @@ if /i "%appveyor_repo_tag%"=="false" goto :eof
 @echo on
 
 :: Build both 64- and 32-bit versions of gvimext.dll for the installer
-start /wait cmd /c "setenv /x64 && cd GvimExt && nmake clean all"
+start /wait cmd /c "setenv /x64 && cd GvimExt && nmake clean all CPU=AMD64"
 move GvimExt\gvimext.dll GvimExt\gvimext64.dll
 start /wait cmd /c "setenv /x86 && cd GvimExt && nmake clean all"
 :: Create zip packages
