@@ -129,11 +129,12 @@ curl -f -L http://upx.sourceforge.net/download/upx391w.zip -o upx.zip
 :skip_install_x64
 
 :: Update PATH
-path C:\Perl522\perl\bin;%path%;C:\Lua;C:\Tcl\bin;C:\Ruby22-x64\bin;C:\Program Files\Racket;C:\Program Files\Racket\lib
+:: path C:\Perl522\perl\bin;%path%;C:\Lua;C:\Tcl\bin;C:\Ruby22-x64\bin;C:\Program Files\Racket;C:\Program Files\Racket\lib
+path C:\Perl522\perl\bin;%path%;C:\Lua;C:\Tcl\bin;C:\Ruby22-x64\bin
 
 :: Install additional packages for Racket
-raco pkg install scheme-lib
-raco pkg install --auto r5rs-lib
+:: raco pkg install scheme-lib
+:: raco pkg install --auto r5rs-lib
 @echo off
 goto :eof
 
