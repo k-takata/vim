@@ -68,7 +68,6 @@ if /i "%appveyor_repo_tag%"=="true" (
 path C:\Perl522\perl\bin;%path%;C:\Lua;C:\Tcl\bin;C:\Ruby22\bin;C:\Program Files (x86)\Racket;C:\Program Files (x86)\Racket\lib
 
 :: Install additional packages for Racket
-raco pkg install scheme-lib
 raco pkg install --auto r5rs-lib
 @echo off
 goto :eof
@@ -128,7 +127,6 @@ if /i "%appveyor_repo_tag%"=="true" (
 path C:\Perl522\perl\bin;%path%;C:\Lua;C:\Tcl\bin;C:\Ruby22-x64\bin;C:\Program Files\Racket;C:\Program Files\Racket\lib
 
 :: Install additional packages for Racket
-raco pkg install scheme-lib
 raco pkg install --auto r5rs-lib
 @echo off
 goto :eof
