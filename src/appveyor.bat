@@ -44,9 +44,6 @@ xcopy /s .ext\include C:\Ruby22\include\ruby-2.2.0
 popd
 :: Racket
 :: Need a patch to install gvim with dynamic racket
-:: Patch from Yukihiro Nakadaira https://groups.google.com/d/msg/vim_dev/qg7R7HeGq50/u96qEzQeBgAJ
-curl -f -L "https://groups.google.com/group/vim_dev/attach/61e3413aadebb/if_mzscheme6.diff?part=0.1&authuser=0" -o fix_mzscheme.diff
-git apply --check fix_mzscheme.diff && git apply fix_mzscheme.diff || exit 1
 curl -f -L https://mirror.racket-lang.org/releases/6.3/installers/racket-minimal-6.3-i386-win32.exe -o racket.exe
 start /wait racket.exe /S
 
@@ -101,9 +98,6 @@ xcopy /s .ext\include C:\Ruby22-x64\include\ruby-2.2.0
 popd
 :: Racket
 :: Need a patch to install gvim with dynamic racket
-:: Patch from Yukihiro Nakadaira https://groups.google.com/d/msg/vim_dev/qg7R7HeGq50/u96qEzQeBgAJ
-curl -f -L "https://groups.google.com/group/vim_dev/attach/61e3413aadebb/if_mzscheme6.diff?part=0.1&authuser=0" -o fix_mzscheme.diff
-git apply --check fix_mzscheme.diff && git apply fix_mzscheme.diff || exit 1
 curl -f -L https://mirror.racket-lang.org/releases/6.3/installers/racket-minimal-6.3-x86_64-win32.exe -o racket.exe
 start /wait racket.exe /S
 
