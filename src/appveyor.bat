@@ -50,21 +50,19 @@ git apply --check fix_mzscheme.diff && git apply fix_mzscheme.diff || exit 1
 curl -f -L https://mirror.racket-lang.org/releases/6.3/installers/racket-minimal-6.3-i386-win32.exe -o racket.exe
 start /wait racket.exe /S
 
-if /i "%appveyor_repo_tag%"=="false" goto skip_install_x86
-
-:: Install binary diff.exe and libintl.dll and iconv.dll
-curl -f -L -O ftp://ftp.vim.org/pub/vim/pc/gvim74.exe
-7z e gvim74.exe $0\diff.exe -o..
-curl -f -L "https://github.com/mlocati/gettext-iconv-windows/releases/download/v0.19.6-v1.14/gettext0.19.6-iconv1.14-shared-32.exe" -o gettext.exe
-start /wait gettext.exe /verysilent /dir=c:\gettext
-copy c:\gettext\libintl-8.dll c:\gettext\libintl.dll
-:: Install NSIS and UPX
-curl -f -L -O http://downloads.sourceforge.net/project/nsis/NSIS%%202/2.50/nsis-2.50.zip
-7z x nsis-2.50.zip -oc:\ > nul
-curl -f -L http://upx.sourceforge.net/download/upx391w.zip -o upx.zip
-7z e upx.zip *\upx.exe -onsis > nul
-
-:skip_install_x86
+if /i "%appveyor_repo_tag%"=="true" (
+  :: Install binary diff.exe and libintl.dll and iconv.dll
+  curl -f -L -O ftp://ftp.vim.org/pub/vim/pc/gvim74.exe
+  7z e gvim74.exe $0\diff.exe -o..
+  curl -f -L "https://github.com/mlocati/gettext-iconv-windows/releases/download/v0.19.6-v1.14/gettext0.19.6-iconv1.14-shared-32.exe" -o gettext.exe
+  start /wait gettext.exe /verysilent /dir=c:\gettext
+  copy c:\gettext\libintl-8.dll c:\gettext\libintl.dll
+  :: Install NSIS and UPX
+  curl -f -L -O http://downloads.sourceforge.net/project/nsis/NSIS%%202/2.50/nsis-2.50.zip
+  7z x nsis-2.50.zip -oc:\ > nul
+  curl -f -L http://upx.sourceforge.net/download/upx391w.zip -o upx.zip
+  7z e upx.zip *\upx.exe -onsis > nul
+)
 
 :: Update PATH
 path C:\Perl522\perl\bin;%path%;C:\Lua;C:\Tcl\bin;C:\Ruby22\bin;C:\Program Files (x86)\Racket;C:\Program Files (x86)\Racket\lib
@@ -110,23 +108,21 @@ git apply --check fix_mzscheme.diff && git apply fix_mzscheme.diff || exit 1
 curl -f -L https://mirror.racket-lang.org/releases/6.3/installers/racket-minimal-6.3-x86_64-win32.exe -o racket.exe
 start /wait racket.exe /S
 
-if /i "%appveyor_repo_tag%"=="false" goto skip_install_x64
-
-:: Install binary diff.exe and libintl.dll and iconv.dll
-curl -f -L -O ftp://ftp.vim.org/pub/vim/pc/gvim74.exe
-7z e gvim74.exe $0\diff.exe -o..
-curl -f -L "https://github.com/mlocati/gettext-iconv-windows/releases/download/v0.19.6-v1.14/gettext0.19.6-iconv1.14-shared-64.exe" -o gettext.exe
-start /wait gettext.exe /verysilent /dir=c:\gettext
-copy c:\gettext\libintl-8.dll c:\gettext\libintl.dll
-:: libwinpthread is needed on Win64 for localizing messages
-::copy c:\gettext\libwinpthread-1.dll ..\runtime
-:: Install NSIS and UPX
-curl -f -L -O http://downloads.sourceforge.net/project/nsis/NSIS%%202/2.50/nsis-2.50.zip
-7z x nsis-2.50.zip -oc:\ > nul
-curl -f -L http://upx.sourceforge.net/download/upx391w.zip -o upx.zip
-7z e upx.zip *\upx.exe -onsis > nul
-
-:skip_install_x64
+if /i "%appveyor_repo_tag%"=="true" (
+  :: Install binary diff.exe and libintl.dll and iconv.dll
+  curl -f -L -O ftp://ftp.vim.org/pub/vim/pc/gvim74.exe
+  7z e gvim74.exe $0\diff.exe -o..
+  curl -f -L "https://github.com/mlocati/gettext-iconv-windows/releases/download/v0.19.6-v1.14/gettext0.19.6-iconv1.14-shared-64.exe" -o gettext.exe
+  start /wait gettext.exe /verysilent /dir=c:\gettext
+  copy c:\gettext\libintl-8.dll c:\gettext\libintl.dll
+  :: libwinpthread is needed on Win64 for localizing messages
+  ::copy c:\gettext\libwinpthread-1.dll ..\runtime
+  :: Install NSIS and UPX
+  curl -f -L -O http://downloads.sourceforge.net/project/nsis/NSIS%%202/2.50/nsis-2.50.zip
+  7z x nsis-2.50.zip -oc:\ > nul
+  curl -f -L http://upx.sourceforge.net/download/upx391w.zip -o upx.zip
+  7z e upx.zip *\upx.exe -onsis > nul
+)
 
 :: Update PATH
 path C:\Perl522\perl\bin;%path%;C:\Lua;C:\Tcl\bin;C:\Ruby22-x64\bin;C:\Program Files\Racket;C:\Program Files\Racket\lib
