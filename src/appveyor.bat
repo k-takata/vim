@@ -67,13 +67,11 @@ curl -f -L http://upx.sourceforge.net/download/upx391w.zip -o upx.zip
 :skip_install_x86
 
 :: Update PATH
-path C:\Perl522\perl\bin;%path%;C:\Lua;C:\Tcl\bin;C:\Ruby22\bin
+path C:\Perl522\perl\bin;%path%;C:\Lua;C:\Tcl\bin;C:\Ruby22\bin;C:\Program Files (x86)\Racket;C:\Program Files (x86)\Racket\lib
 
 :: Install additional packages for Racket
-:: (Running Racket on AppVeyor causes 0xc0000005 error. Disable it for now.)
-:: path %path%;C:\Program Files (x86)\Racket;C:\Program Files (x86)\Racket\lib
-:: raco pkg install scheme-lib
-:: raco pkg install --auto r5rs-lib
+raco pkg install scheme-lib
+raco pkg install --auto r5rs-lib
 @echo off
 goto :eof
 
@@ -131,13 +129,11 @@ curl -f -L http://upx.sourceforge.net/download/upx391w.zip -o upx.zip
 :skip_install_x64
 
 :: Update PATH
-path C:\Perl522\perl\bin;%path%;C:\Lua;C:\Tcl\bin;C:\Ruby22-x64\bin
+path C:\Perl522\perl\bin;%path%;C:\Lua;C:\Tcl\bin;C:\Ruby22-x64\bin;C:\Program Files\Racket;C:\Program Files\Racket\lib
 
 :: Install additional packages for Racket
-:: (Running Racket on AppVeyor causes 0xc0000005 error. Disable it for now.)
-:: path %path%;C:\Program Files\Racket;C:\Program Files\Racket\lib
-:: raco pkg install scheme-lib
-:: raco pkg install --auto r5rs-lib
+raco pkg install scheme-lib
+raco pkg install --auto r5rs-lib
 @echo off
 goto :eof
 
