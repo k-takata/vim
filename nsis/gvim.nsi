@@ -7,17 +7,17 @@
 
 # Location of gvim_ole.exe, vimw32.exe, GvimExt/*, etc.
 !ifndef VIMSRC
-!define VIMSRC "..\src"
+  !define VIMSRC "..\src"
 !endif
 
 # Location of runtime files
 !ifndef VIMRT
-!define VIMRT ".."
+  !define VIMRT ".."
 !endif
 
 # Location of extra tools: diff.exe
 !ifndef VIMTOOLS
-!define VIMTOOLS ..\..
+  !define VIMTOOLS ..\..
 !endif
 
 # Comment the next line if you don't have UPX.
@@ -359,7 +359,7 @@ SectionEnd
 		File ${VIMRT}\keymap\README.txt
 		File ${VIMRT}\keymap\*.vim
 		SetOutPath $0
-		File ${VIMRT}\libintl.dll
+		File ${VIMRT}\libintl-8.dll
 		File ${VIMRT}\libiconv-2.dll
 		File /nonfatal ${VIMRT}\libwinpthread-1.dll
 	SectionEnd
