@@ -138,6 +138,7 @@ Var vim_rm_common         # Flag: Should we remove common files?
 !define VIM_INSTALLER     "gvim${VIM_VER_NDOT}.exe"
 !define VIM_UNINSTALLER   "uninstall-gui.exe"
 !define VIM_USER_MANUAL   "install_manual.txt"
+!define VIM_PUBLISHER     "Bram Moolenaar et al."
 
 # Registry keys:
 !define REG_KEY_WINDOWS   "software\Microsoft\Windows\CurrentVersion"
@@ -223,6 +224,7 @@ Var vim_rm_common         # Flag: Should we remove common files?
      STR | HelpLink          | ${VIM_ONLINE_URL}/                    $\n\
      STR | URLUpdateInfo     | ${VIM_ONLINE_URL}/download.php#pc     $\n\
      STR | DisplayVersion    | ${VIM_VER_SHORT}                      $\n\
+     STR | Publisher         | ${VIM_PUBLISHER}                      $\n\
      DW  | NoModify          | 1 $\n\
      DW  | NoRepair          | 1 $\n\
      DW  | ${REG_KEY_SILENT} | 1 "
