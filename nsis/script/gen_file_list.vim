@@ -1,4 +1,4 @@
-" vi:set ts=8 sts=4 sw=4 fdm=marker:
+" vi:set ts=8 sts=4 sw=4 et fdm=marker:
 "
 " This Vim script is used to generate NSIS commands to install/un-install
 " files from templates held in the current buffer.  Please refer to section

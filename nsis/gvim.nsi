@@ -1,4 +1,4 @@
-# vi:set ts=8 sts=4 sw=4 fdm=marker:
+# vi:set ts=8 sts=4 sw=4 et fdm=marker:
 #
 # NSIS file to create a self-installing exe for Vim.
 # It requires NSIS version 2.34 or later (for Modern UI 2.0).

@@ -1,4 +1,4 @@
-# vi:set ts=8 sts=4 sw=4 fdm=marker:
+# vi:set ts=8 sts=4 sw=4 et fdm=marker:
 #
 # english.nsi: English language strings for gvim NSIS installer.
 #

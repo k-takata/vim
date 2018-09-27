@@ -1,4 +1,4 @@
-# vi:set ts=8 sts=4 sw=4 fdm=marker:
+# vi:set ts=8 sts=4 sw=4 et fdm=marker:
 #
 # simple_log.nsh
 # Macros for simple debug log.
