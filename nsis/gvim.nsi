@@ -8,20 +8,33 @@
 # Configurable Settings                                                   {{{1
 ##############################################################################
 
-# Location of gvim_ole.exe, vimd32.exe, GvimExt/*, etc.
-!define VIMSRC   "..\src"
+# Location of gvim_ole.exe, vimw32.exe, GvimExt/*, etc.
+!ifndef VIMSRC
+  !define VIMSRC "..\src"
+!endif
 
 # Location of runtime files
-!define VIMRT    ".."
+!ifndef VIMRT
+  !define VIMRT ".."
+!endif
 
 # Location of extra tools: diff.exe
-!define VIMTOOLS "..\.."
+!ifndef VIMTOOLS
+  !define VIMTOOLS ..\..
+!endif
+
+# Location of gettext.
+# It must contain two directories: gettext32 and gettext64.
+# See README.txt for detail.
+!ifndef GETTEXT
+  !define GETTEXT ${VIMRT}
+!endif
 
 # URL for vim online:
 !define VIM_ONLINE_URL "http://www.vim.org"
 
 # Comment the next line if you don't have UPX.
-# Get it at http://upx.sourceforge.net
+# Get it at https://upx.github.io/
 !define HAVE_UPX
 
 # Comment the next line if you do not want to add Native Language Support
@@ -65,8 +78,7 @@
 # versions, like the one installed on the build system.
 !define VIM_INTERPRETER "${VIMSRC}\vimw32.exe"
 
-!define VER_MAJOR 7
-!define VER_MINOR 3
+!include gvim_version.nsh	# for version number
 
 # ---------------- No configurable settings below this line ------------------
 
@@ -204,7 +216,7 @@ Var vim_rm_common         # Flag: Should we remove common files?
 # Uninstall info:
 #   Type | Registry Subkey   | Registry Value
 !define VIM_UNINSTALL_REG_INFO \
-    "STR | DisplayName       | ${VIM_PRODUCT_NAME} (self-installing) $\n\
+    "STR | DisplayName       | ${VIM_PRODUCT_NAME}                   $\n\
      STR | UninstallString   | $vim_bin_path\${VIM_UNINSTALLER}      $\n\
      STR | InstallLocation   | $vim_bin_path                         $\n\
      STR | DisplayIcon       | $vim_bin_path\gvim.exe,0              $\n\
@@ -238,7 +250,9 @@ Var vim_rm_common         # Flag: Should we remove common files?
 Name                      "${VIM_PRODUCT_NAME}"
 OutFile                   ${VIM_INSTALLER}
 CRCCheck                  force
-SetCompressor             lzma
+SetCompressor             /SOLID lzma
+SetCompressorDictSize     64
+ManifestDPIAware          true
 SetDatablockOptimize      on
 BrandingText              "${VIM_PRODUCT_NAME}"
 RequestExecutionLevel     highest
@@ -743,16 +757,7 @@ SilentInstall             normal
     # Error flag will be used below, let's clear it first:
     ClearErrors
 
-    # Try to read registry value specific to Windows NT & above:
-    ReadRegStr $R0 HKLM \
-        "SOFTWARE\Microsoft\Windows NT\CurrentVersion" "CurrentVersion"
-    ${If} ${Errors}
-        # Windows 95/98/ME
-        ${Logged2} File /oname=vim.exe "${VIMSRC}\vimd32.exe"
-    ${Else}
-        # Windows NT/2000/XP
-        ${Logged2} File /oname=vim.exe "${VIMSRC}\vimw32.exe"
-    ${EndIf}
+    ${Logged2} File /oname=vim.exe "${VIMSRC}\vimw32.exe"
 !macroend
 
 # ----------------------------------------------------------------------------
@@ -1204,16 +1209,17 @@ SectionGroup $(str_group_edit_with) id_group_editwith
 
         ${LogSectionStart}
 
-        ${Log} "Install $vim_bin_path\gvimext32.dll"
+        ${Log} "Install $vim_bin_path\GvimExt32\gvimext.dll"
+        ${Logged1} SetOutPath "$vim_bin_path\GvimExt32"
         ${Logged1} SetRegView 32
         !define LIBRARY_SHELL_EXTENSION
         !insertmacro InstallLib DLL NOTSHARED REBOOT_NOTPROTECTED \
             "${VIMSRC}\GvimExt\gvimext.dll" \
-            "$vim_bin_path\gvimext32.dll" "$vim_bin_path"
+            "$vim_bin_path\GvimExt32\gvimext.dll" "$vim_bin_path\GvimExt32"
         !undef LIBRARY_SHELL_EXTENSION
 
         ${Logged1} SetRegView 32
-        Push "$vim_bin_path\gvimext32.dll"
+        Push "$vim_bin_path\GvimExt32\gvimext.dll"
         Call VimRegShellExt
 
         # Restore registry view:
@@ -1229,18 +1235,19 @@ SectionGroup $(str_group_edit_with) id_group_editwith
         ${LogSectionStart}
 
         ${If} ${RunningX64}
-            ${Log} "Install $vim_bin_path\gvimext64.dll"
+            ${Log} "Install $vim_bin_path\GvimExt64\gvimext.dll"
+            ${Logged1} SetOutPath "$vim_bin_path\GvimExt64"
             ${Logged1} SetRegView 64
             !define LIBRARY_SHELL_EXTENSION
             !define LIBRARY_X64
             !insertmacro InstallLib DLL NOTSHARED REBOOT_NOTPROTECTED \
                 "${VIMSRC}\GvimExt\gvimext64.dll" \
-                "$vim_bin_path\gvimext64.dll" "$vim_bin_path"
+                "$vim_bin_path\GvimExt64\gvimext.dll" "$vim_bin_path\GvimExt64"
             !undef LIBRARY_X64
             !undef LIBRARY_SHELL_EXTENSION
 
             ${Logged1} SetRegView 64
-            Push "$vim_bin_path\gvimext64.dll"
+            Push "$vim_bin_path\GvimExt64\gvimext.dll"
             Call VimRegShellExt
         ${EndIf}
 
@@ -1339,18 +1346,62 @@ SectionGroupEnd
             "vim_install_nls.nsi" "vim_uninst_nls.nsi"
 
         # Install NLS support DLLs:
-        ${Log} "Install $vim_bin_path\libintl.dll"
+        ${Log} "Install $vim_bin_path\libintl-8.dll"
         ${Logged1} SetOutPath "$vim_bin_path"
         !insertmacro InstallLib DLL NOTSHARED REBOOT_NOTPROTECTED \
-            "${VIMRT}\libintl.dll" \
-            "$vim_bin_path\libintl.dll" "$vim_bin_path"
+            "${GETTEXT}\gettext32\libintl-8.dll" \
+            "$vim_bin_path\libintl-8.dll" "$vim_bin_path"
 
-        !ifdef HAVE_ICONV
-            ${Log} "Install $vim_bin_path\iconv.dll"
+        ${Log} "Install $vim_bin_path\libiconv-2.dll"
+        !insertmacro InstallLib DLL NOTSHARED REBOOT_NOTPROTECTED \
+            "${GETTEXT}\gettext32\libiconv-2.dll" \
+            "$vim_bin_path\libiconv-2.dll" "$vim_bin_path"
+
+        !if /FileExists "${GETTEXT}\gettext32\libgcc_s_sjlj-1.dll"
+            # Install libgcc_s_sjlj-1.dll only if it is needed.
+            ${Log} "Install $vim_bin_path\libgcc_s_sjlj-1.dll"
             !insertmacro InstallLib DLL NOTSHARED REBOOT_NOTPROTECTED \
-                "${VIMRT}\iconv.dll" \
-                "$vim_bin_path\iconv.dll" "$vim_bin_path"
+                "${GETTEXT}\gettext32\libgcc_s_sjlj-1.dll" \
+                "$vim_bin_path\libgcc_s_sjlj-1.dll" "$vim_bin_path"
         !endif
+
+        ${If} ${SectionIsSelected} ${id_section_editwith32}
+            # Install NLS support DLLs for 32-bit GvimExt:
+            ${Log} "Install $vim_bin_path\GvimExt32\libintl-8.dll"
+            ${Logged1} SetOutPath "$vim_bin_path\GvimExt32"
+            !insertmacro InstallLib DLL NOTSHARED REBOOT_NOTPROTECTED \
+                "${GETTEXT}\gettext32\libintl-8.dll" \
+                "$vim_bin_path\GvimExt32\libintl-8.dll" "$vim_bin_path\GvimExt32"
+
+            ${Log} "Install $vim_bin_path\GvimExt32\libiconv-2.dll"
+            !insertmacro InstallLib DLL NOTSHARED REBOOT_NOTPROTECTED \
+                "${GETTEXT}\gettext32\libiconv-2.dll" \
+                "$vim_bin_path\GvimExt32\libiconv-2.dll" "$vim_bin_path\GvimExt32"
+
+            !if /FileExists "${GETTEXT}\gettext32\libgcc_s_sjlj-1.dll"
+                # Install libgcc_s_sjlj-1.dll only if it is needed.
+                ${Log} "Install $vim_bin_path\GvimExt32\libgcc_s_sjlj-1.dll"
+                !insertmacro InstallLib DLL NOTSHARED REBOOT_NOTPROTECTED \
+                    "${GETTEXT}\gettext32\libgcc_s_sjlj-1.dll" \
+                    "$vim_bin_path\GvimExt32\libgcc_s_sjlj-1.dll" "$vim_bin_path\GvimExt32"
+            !endif
+        ${EndIf}
+
+        ${If} ${SectionIsSelected} ${id_section_editwith64}
+            ${If} ${RunningX64}
+                # Install NLS support DLLs for 64-bit GvimExt:
+                ${Log} "Install $vim_bin_path\GvimExt64\libintl-8.dll"
+                ${Logged1} SetOutPath "$vim_bin_path\GvimExt64"
+                !insertmacro InstallLib DLL NOTSHARED REBOOT_NOTPROTECTED \
+                    "${GETTEXT}\gettext64\libintl-8.dll" \
+                    "$vim_bin_path\GvimExt64\libintl-8.dll" "$vim_bin_path\GvimExt64"
+
+                ${Log} "Install $vim_bin_path\GvimExt64\libiconv-2.dll"
+                !insertmacro InstallLib DLL NOTSHARED REBOOT_NOTPROTECTED \
+                    "${GETTEXT}\gettext64\libiconv-2.dll" \
+                    "$vim_bin_path\GvimExt64\libiconv-2.dll" "$vim_bin_path\GvimExt64"
+            ${EndIf}
+        ${EndIf}
 
         ${LogSectionEnd}
     SectionEnd
@@ -2642,25 +2693,25 @@ Section "un.$(str_unsection_register)" id_unsection_register
     # Remove gvimext.dll:
     !define LIBRARY_SHELL_EXTENSION
 
-    ${If} ${FileExists} "$vim_bin_path\gvimext64.dll"
+    ${If} ${FileExists} "$vim_bin_path\GvimExt64\gvimext.dll"
         # Remove 64-bit shell extension:
-        ${Log} "Remove $vim_bin_path\gvimext64.dll"
+        ${Log} "Remove $vim_bin_path\GvimExt64\gvimext.dll"
         ${Logged1} SetRegView 64
         !define LIBRARY_X64
         !insertmacro UninstallLib DLL NOTSHARED REBOOT_NOTPROTECTED \
-            "$vim_bin_path\gvimext64.dll"
+            "$vim_bin_path\GvimExt64\gvimext.dll"
         !undef LIBRARY_X64
 
         ${Logged1} SetRegView 64
         Call un.VimUnregShellExt
     ${EndIf}
 
-    ${If} ${FileExists} "$vim_bin_path\gvimext32.dll"
+    ${If} ${FileExists} "$vim_bin_path\GvimExt32\gvimext.dll"
         # Remove 32-bit shell extension:
-        ${Log} "Remove $vim_bin_path\gvimext32.dll"
+        ${Log} "Remove $vim_bin_path\GvimExt32\gvimext.dll"
         ${Logged1} SetRegView 32
         !insertmacro UninstallLib DLL NOTSHARED REBOOT_NOTPROTECTED \
-            "$vim_bin_path\gvimext32.dll"
+            "$vim_bin_path\GvimExt32\gvimext.dll"
 
         ${Logged1} SetRegView 32
         Call un.VimUnregShellExt
@@ -2726,16 +2777,60 @@ Section "un.$(str_unsection_exe)" id_unsection_exe
 
     # Remove NLS support DLLs.  This is overkill.
     !ifdef HAVE_NLS
-        ${Log} "Remove $vim_bin_path\libintl.dll"
+        ${Log} "Remove $vim_bin_path\libintl-8.dll"
         !insertmacro UninstallLib DLL NOTSHARED REBOOT_NOTPROTECTED \
-            "$vim_bin_path\libintl.dll"
+            "$vim_bin_path\libintl-8.dll"
 
-        !ifdef HAVE_ICONV
-            ${Log} "Remove $vim_bin_path\iconv.dll"
+        ${Log} "Remove $vim_bin_path\libiconv-2.dll"
+        !insertmacro UninstallLib DLL NOTSHARED REBOOT_NOTPROTECTED \
+            "$vim_bin_path\libiconv-2.dll"
+
+        ${If} ${FileExists} "$vim_bin_path\libgcc_s_sjlj-1.dll"
+            ${Log} "Remove $vim_bin_path\libgcc_s_sjlj-1.dll"
             !insertmacro UninstallLib DLL NOTSHARED REBOOT_NOTPROTECTED \
-                "$vim_bin_path\iconv.dll"
-        !endif
+                "$vim_bin_path\libgcc_s_sjlj-1.dll"
+        ${EndIf}
+
+        # Remove NLS support DLLs for 32-bit GvimExt.
+        ${If} ${FileExists} "$vim_bin_path\GvimExt32\libintl-8.dll"
+            ${Log} "Remove $vim_bin_path\GvimExt32\libintl-8.dll"
+            !insertmacro UninstallLib DLL NOTSHARED REBOOT_NOTPROTECTED \
+                "$vim_bin_path\GvimExt32\libintl-8.dll"
+        ${EndIf}
+
+        ${If} ${FileExists} "$vim_bin_path\GvimExt32\libiconv-2.dll"
+            ${Log} "Remove $vim_bin_path\GvimExt32\libiconv-2.dll"
+            !insertmacro UninstallLib DLL NOTSHARED REBOOT_NOTPROTECTED \
+                "$vim_bin_path\GvimExt32\libiconv-2.dll"
+        ${EndIf}
+
+        ${If} ${FileExists} "$vim_bin_path\GvimExt32\libgcc_s_sjlj-1.dll"
+            ${Log} "Remove $vim_bin_path\GvimExt32\libgcc_s_sjlj-1.dll"
+            !insertmacro UninstallLib DLL NOTSHARED REBOOT_NOTPROTECTED \
+                "$vim_bin_path\GvimExt32\libgcc_s_sjlj-1.dll"
+        ${EndIf}
+
+        ${If} ${RunningX64}
+            # Remove NLS support DLLs for 64-bit GvimExt.
+            ${If} ${FileExists} "$vim_bin_path\GvimExt64\libintl-8.dll"
+                ${Log} "Remove $vim_bin_path\GvimExt64\libintl-8.dll"
+                !insertmacro UninstallLib DLL NOTSHARED REBOOT_NOTPROTECTED \
+                    "$vim_bin_path\GvimExt64\libintl-8.dll"
+            ${EndIf}
+
+            ${If} ${FileExists} "$vim_bin_path\GvimExt64\libiconv-2.dll"
+                ${Log} "Remove $vim_bin_path\GvimExt64\libiconv-2.dll"
+                !insertmacro UninstallLib DLL NOTSHARED REBOOT_NOTPROTECTED \
+                    "$vim_bin_path\GvimExt64\libiconv-2.dll"
+            ${EndIf}
+        ${EndIf}
     !endif
+    ${If} ${FileExists} "$vim_bin_path\GvimExt32\*.*"
+        ${Logged1} RMDir "$vim_bin_path\GvimExt32"
+    ${EndIf}
+    ${If} ${FileExists} "$vim_bin_path\GvimExt64\*.*"
+        ${Logged1} RMDir "$vim_bin_path\GvimExt64"
+    ${EndIf}
 
     # Remove XPM:
     !ifdef HAVE_XPM
