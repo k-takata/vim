@@ -1579,9 +1579,49 @@ Function .onInit
 FunctionEnd
 
 # ----------------------------------------------------------------------------
+# Function _VimCalcEstimatedSize                                          {{{2
+#   Callback function for LoopMatrix to calculate estimated size
+# ----------------------------------------------------------------------------
+Function _VimCalcEstimatedSize
+    Exch      $3     # Arg 2: Ignored
+    ${ExchAt} 1 $2   # Arg 1: Ignored
+    ${ExchAt} 2 $1   # Col 2: Current section ID
+    ${ExchAt} 3 $0   # Col 1: Current section (component) name
+
+    Push $R2
+    ${If} ${SectionIsSelected} $1
+        ${Logged2} SectionGetSize $1 $R2
+        ${Logged4} IntOp $9 $9 + $R2
+    ${EndIf}
+    Pop $R2
+
+    # Exit value:
+    StrCpy $0 ""
+
+    # Restore the stack:
+    Pop  $3
+    Pop  $2
+    Pop  $1
+    Exch $0
+FunctionEnd
+
+# ----------------------------------------------------------------------------
 # Function .onInstSuccess                                                 {{{2
 # ----------------------------------------------------------------------------
 Function .onInstSuccess
+    # Calculate EstimatedSize:
+    Push $R0
+    Push $3
+    Push $9
+    ${Logged2} SectionGetSize ${id_section_exe} $9
+    ${LoopMatrix} "${VIM_INSTALL_SECS}" "_VimCalcEstimatedSize" "" "" "" $R0
+    # $3 - Uninstall registry key.
+    StrCpy $3 "${REG_KEY_UNINSTALL}\${VIM_PRODUCT_NAME}"
+    ${Logged4} WriteRegDWORD SHCTX "$3" "EstimatedSize" "$9"
+    Pop $9
+    Pop $3
+    Pop $R0
+
     WriteUninstaller ${VIM_BIN_DIR}\${VIM_UNINSTALLER}
 
     # Close log:
