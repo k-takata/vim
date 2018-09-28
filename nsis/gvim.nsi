@@ -31,7 +31,7 @@
 !endif
 
 # URL for vim online:
-!define VIM_ONLINE_URL "http://www.vim.org"
+!define VIM_ONLINE_URL "https://www.vim.org"
 
 # Comment the next line if you don't have UPX.
 # Get it at https://upx.github.io/
@@ -1550,7 +1550,7 @@ Function .onInit
     # assigned to $LANGUAGE.  If registry key defined, the LCID will also be
     # stored in Windows registry.  For list of LCID, check "Locale IDs
     # Assigned by Microsoft":
-    #   http://msdn.microsoft.com/en-us/goglobal/bb964664.aspx
+    #   https://msdn.microsoft.com/en-us/goglobal/bb964664.aspx
     !ifdef HAVE_MULTI_LANG
         ${If} $vim_usr_locale == ""
             !insertmacro MUI_LANGDLL_DISPLAY
