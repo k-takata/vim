@@ -1,8 +1,10 @@
-# vi:set ts=8 sts=4 sw=4 et fdm=marker:
+﻿# vi:set ts=8 sts=4 sw=4 et fdm=marker:
 #
 # NSIS file to create a self-installing exe for Vim.
-# It requires NSIS version 2.34 or later (for Modern UI 2.0).
-# Last Change:	2010 Jul 30
+# It requires NSIS version 3.00 or later (for Modern UI 2.0 and Unicode).
+# Last Change:	2018 Sep 29
+
+Unicode true
 
 ##############################################################################
 # Configurable Settings                                                   {{{1

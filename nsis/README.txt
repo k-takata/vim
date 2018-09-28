@@ -8,7 +8,7 @@ I. Build Instruction for Vim NSIS Installer
 
 1.  Software requirement:
 
-    - NSIS (2.46 or above).  This is required to build the installer.  It's
+    - NSIS (3.00 or above).  This is required to build the installer.  It's
       available at:
         http://nsis.sourceforge.net/
       The NSIS install directory should be added to the PATH environment.

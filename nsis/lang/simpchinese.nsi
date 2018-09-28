@@ -1,10 +1,10 @@
-# vi:set ts=8 sts=4 sw=4 et fdm=marker:
+﻿# vi:set ts=8 sts=4 sw=4 et fdm=marker:
 #
 # simpchinese.nsi: Simplified Chinese language strings for gvim NSIS
 # installer.
 #
 # Locale ID    : 2052
-# fileencoding : cp936
+# fileencoding : UTF-8
 # Author       : Guopeng Wen
 
 !include "script\helper_util.nsh"
@@ -16,20 +16,20 @@ ${VimAddLanguage} "SimpChinese" "zh_CN"
 ##############################################################################
 
 LangString str_dest_folder          ${LANG_SIMPCHINESE} \
-    "��װ·�� (������ vim ��β)"
+    "安装路径 (必须以 vim 结尾)"
 
 LangString str_show_readme          ${LANG_SIMPCHINESE} \
-    "��װ��ɺ���ʾ README �ļ�"
+    "安装完成后显示 README 文件"
 
 # Install types:
 LangString str_type_typical         ${LANG_SIMPCHINESE} \
-    "���Ͱ�װ"
+    "典型安装"
 
 LangString str_type_minimal         ${LANG_SIMPCHINESE} \
-    "��С��װ"
+    "最小安装"
 
 LangString str_type_full            ${LANG_SIMPCHINESE} \
-    "��ȫ��װ"
+    "完全安装"
 
 
 ##############################################################################
@@ -37,103 +37,103 @@ LangString str_type_full            ${LANG_SIMPCHINESE} \
 ##############################################################################
 
 LangString str_group_old_ver        ${LANG_SIMPCHINESE} \
-    "ж�ؾɰ汾"
+    "卸载旧版本"
 LangString str_desc_old_ver         ${LANG_SIMPCHINESE} \
-    "ж��ϵͳ�Ͼɰ汾�� Vim��"
+    "卸载系统上旧版本的 Vim。"
 
 LangString str_section_exe          ${LANG_SIMPCHINESE} \
-    "��װ Vim ͼ�ν���"
+    "安装 Vim 图形界面"
 LangString str_desc_exe             ${LANG_SIMPCHINESE} \
-    "��װ Vim ͼ�ν��漰�ű�����Ϊ��ѡ��װ��"
+    "安装 Vim 图形界面及脚本。此为必选安装。"
 
 LangString str_section_console      ${LANG_SIMPCHINESE} \
-    "��װ Vim �����г���"
+    "安装 Vim 命令行程序"
 LangString str_desc_console         ${LANG_SIMPCHINESE} \
-    "��װ Vim �����г��� (vim.exe)���ó����������д��������С�"
+    "安装 Vim 命令行程序 (vim.exe)。该程序在命令行窗口中运行。"
 
 LangString str_section_batch        ${LANG_SIMPCHINESE} \
-    "��װ�������ļ�"
+    "安装批处理文件"
 LangString str_desc_batch           ${LANG_SIMPCHINESE} \
-    "Ϊ Vim �ĸ��ֱ��崴�������������Ա��������������� Vim��"
+    "为 Vim 的各种变体创建批处理程序，以便在命令行下运行 Vim。"
 
 LangString str_group_icons          ${LANG_SIMPCHINESE} \
-    "���� Vim ͼ��"
+    "创建 Vim 图标"
 LangString str_desc_icons           ${LANG_SIMPCHINESE} \
-    "Ϊ Vim ��������ͼ�꣬�Է���ʹ�� Vim��"
+    "为 Vim 创建若干图标，以方便使用 Vim。"
 
 LangString str_section_desktop      ${LANG_SIMPCHINESE} \
-    "��������"
+    "在桌面上"
 LangString str_desc_desktop         ${LANG_SIMPCHINESE} \
-    "��������Ϊ Vim ��������ͼ�꣬�Է������� Vim��"
+    "在桌面上为 Vim 创建若干图标，以方便启动 Vim。"
 
 LangString str_section_start_menu   ${LANG_SIMPCHINESE} \
-    "�������˵��ĳ���˵���"
+    "在启动菜单的程序菜单下"
 LangString str_desc_start_menu      ${LANG_SIMPCHINESE} \
-    "�������˵��ĳ���˵������� Vim �顣������ Windows 95 �����ϰ汾��"
+    "在启动菜单的程序菜单下添加 Vim 组。适用于 Windows 95 及以上版本。"
 
 LangString str_section_quick_launch ${LANG_SIMPCHINESE} \
-    "�ڿ���������������"
+    "在快速启动启动栏中"
 LangString str_desc_quick_launch    ${LANG_SIMPCHINESE} \
-    "�ڿ��������������� Vim ͼ�ꡣ"
+    "在快速启动栏中添加 Vim 图标。"
 
 LangString str_group_edit_with      ${LANG_SIMPCHINESE} \
-    "��װ��ݲ˵�"
+    "安装快捷菜单"
 LangString str_desc_edit_with       ${LANG_SIMPCHINESE} \
-    "�� Vim ���ӵ����򿪷�ʽ����ݲ˵��С�"
+    "将 Vim 添加到“打开方式”快捷菜单中。"
 
 LangString str_section_edit_with32  ${LANG_SIMPCHINESE} \
-    "32 λ�汾"
+    "32 位版本"
 LangString str_desc_edit_with32     ${LANG_SIMPCHINESE} \
-    "�� Vim ���ӵ� 32 λ����ġ��򿪷�ʽ����ݲ˵��С�"
+    "将 Vim 添加到 32 位程序的“打开方式”快捷菜单中。"
 
 LangString str_section_edit_with64  ${LANG_SIMPCHINESE} \
-    "64 λ�汾"
+    "64 位版本"
 LangString str_desc_edit_with64     ${LANG_SIMPCHINESE} \
-    "�� Vim ���ӵ� 64 λ����ġ��򿪷�ʽ����ݲ˵��С�"
+    "将 Vim 添加到 64 位程序的“打开方式”快捷菜单中。"
 
 LangString str_section_vim_rc       ${LANG_SIMPCHINESE} \
-    "����ȱʡ�����ļ�"
+    "创建缺省配置文件"
 LangString str_desc_vim_rc          ${LANG_SIMPCHINESE} \
-    "�ڰ�װĿ¼������ȱʡ�� Vim �����ļ�(_vimrc)��\
-     ������ļ��Ѿ����ڣ����Թ����"
+    "在安装目录下生成缺省的 Vim 配置文件(_vimrc)。\
+     如果该文件已经存在，则略过此项。"
 
 LangString str_group_plugin         ${LANG_SIMPCHINESE} \
-    "�������Ŀ¼"
+    "创建插件目录"
 LangString str_desc_plugin          ${LANG_SIMPCHINESE} \
-    "����(�յ�)���Ŀ¼�ṹ�����Ŀ¼���ڰ�װ Vim ��չ�����\
-     ֻҪ���ļ����Ƶ���ص���Ŀ¼�м��ɡ�"
+    "创建(空的)插件目录结构。插件目录用于安装 Vim 扩展插件，\
+     只要将文件复制到相关的子目录中即可。"
 
 LangString str_section_plugin_home  ${LANG_SIMPCHINESE} \
-    "˽�в��Ŀ¼"
+    "私有插件目录"
 LangString str_desc_plugin_home     ${LANG_SIMPCHINESE} \
-    "�� HOME Ŀ¼�´���(�յ�)���Ŀ¼�ṹ������δ���� HOME Ŀ¼�����ڰ�װ\
-     Ŀ¼�´�����Ŀ¼�ṹ��"
+    "在 HOME 目录下创建(空的)插件目录结构。若您未设置 HOME 目录，会在安装\
+     目录下创建该目录结构。"
 
 LangString str_section_plugin_vim   ${LANG_SIMPCHINESE} \
-    "�������Ŀ¼"
+    "公共插件目录"
 LangString str_desc_plugin_vim      ${LANG_SIMPCHINESE} \
-    "�� Vim ��װĿ¼�´���(�յ�)���Ŀ¼�ṹ��ϵͳ�������û�����ʹ�ð�װ��\
-     ��Ŀ¼�µ���չ�����"
+    "在 Vim 安装目录下创建(空的)插件目录结构，系统上所有用户都能使用安装在\
+     该目录下的扩展插件。"
 
 LangString str_section_vis_vim      ${LANG_SIMPCHINESE} \
-    "��װ VisVim ���"
+    "安装 VisVim 插件"
 LangString str_desc_vis_vim         ${LANG_SIMPCHINESE} \
-    "��װ������΢�� Microsoft Visual Studio ���м��ɵ� VisVim �����"
+    "安装用于与微软 Microsoft Visual Studio 进行集成的 VisVim 插件。"
 
 LangString str_section_nls          ${LANG_SIMPCHINESE} \
-    "��װ������֧��"
+    "安装多语言支持"
 LangString str_desc_nls             ${LANG_SIMPCHINESE} \
-    "��װ���ڶ�����֧�ֵ��ļ���"
+    "安装用于多语言支持的文件。"
 
 LangString str_unsection_register   ${LANG_SIMPCHINESE} \
-    "ɾ�� Vim ϵͳ����"
+    "删除 Vim 系统配置"
 LangString str_desc_unregister      ${LANG_SIMPCHINESE} \
-    "ɾ���� Vim ��ص�ϵͳ���á�"
+    "删除和 Vim 相关的系统配置。"
 
 LangString str_unsection_exe        ${LANG_SIMPCHINESE} \
-    "ɾ�� Vim ִ���ļ��Լ��ű�"
+    "删除 Vim 执行文件以及脚本"
 LangString str_desc_rm_exe          ${LANG_SIMPCHINESE} \
-    "ɾ�� Vim ������ִ���ļ����ű���"
+    "删除 Vim 的所有执行文件及脚本。"
 
 
 ##############################################################################
@@ -141,60 +141,60 @@ LangString str_desc_rm_exe          ${LANG_SIMPCHINESE} \
 ##############################################################################
 
 LangString str_msg_too_many_ver  ${LANG_SIMPCHINESE} \
-    "����ϵͳ�ϰ�װ�� $vim_old_ver_count ����ͬ�汾�� Vim��$\r$\n\
-     ������װ�������ֻ�ܴ��� ${VIM_MAX_OLD_VER} ���汾��$\r$\n\
-     �����ֹ�ɾ��һЩ�ɰ汾�Ժ������б���װ����"
+    "您的系统上安装了 $vim_old_ver_count 个不同版本的 Vim，$\r$\n\
+     但本安装程序最多只能处理 ${VIM_MAX_OLD_VER} 个版本。$\r$\n\
+     请您手工删除一些旧版本以后再运行本安装程序。"
 
 LangString str_msg_invalid_root  ${LANG_SIMPCHINESE} \
-    "��װ·����$vim_install_root����Ч��$\r$\n\
-     ��·�������� vim ��β��"
+    "安装路径“$vim_install_root”无效！$\r$\n\
+     该路径必须以 vim 结尾。"
 
 LangString str_msg_bin_mismatch  ${LANG_SIMPCHINESE} \
-    "Vim ִ�г���װ·���쳣��$\r$\n$\r$\n\
-     �ð汾 Vim ��ִ�г���װ·��Ӧ���ǡ�$vim_bin_path��,$\r$\n\
-     ��ϵͳȴָʾ��·��Ϊ��$INSTDIR����"
+    "Vim 执行程序安装路径异常！$\r$\n$\r$\n\
+     该版本 Vim 的执行程序安装路径应该是“$vim_bin_path”,$\r$\n\
+     而系统却指示该路径为“$INSTDIR”。"
 
 LangString str_msg_vim_running   ${LANG_SIMPCHINESE} \
-    "����ϵͳ������ Vim �����У�$\r$\n\
-     ������ִ�к�������ǰ�˳���Щ Vim��"
+    "您的系统上仍有 Vim 在运行，$\r$\n\
+     请您在执行后续步骤前退出这些 Vim。"
 
 LangString str_msg_register_ole  ${LANG_SIMPCHINESE} \
-    "��ͼע�� Vim OLE ����������ע�����۳ɹ���񶼲�����ʾ��һ������Ϣ��"
+    "试图注册 Vim OLE 服务器。请注意无论成功与否都不再显示进一步的信息。"
 
 LangString str_msg_unreg_ole     ${LANG_SIMPCHINESE} \
-    "��ͼע�� Vim OLE ����������ע�����۳ɹ���񶼲�����ʾ��һ������Ϣ��"
+    "试图注销 Vim OLE 服务器。请注意无论成功与否都不再显示进一步的信息。"
 
 LangString str_msg_rm_start      ${LANG_SIMPCHINESE} \
-    "��ʼж�����°汾��"
+    "开始卸载以下版本："
 
 LangString str_msg_rm_fail       ${LANG_SIMPCHINESE} \
-    "���°汾ж��ʧ�ܣ�"
+    "以下版本卸载失败："
 
 LangString str_msg_no_rm_key     ${LANG_SIMPCHINESE} \
-    "�Ҳ���ж�س����ע�������"
+    "找不到卸载程序的注册表键。"
 
 LangString str_msg_no_rm_reg     ${LANG_SIMPCHINESE} \
-    "��ע�����δ�ҵ�ж�س���·����"
+    "在注册表中未找到卸载程序路径。"
 
 LangString str_msg_no_rm_exe     ${LANG_SIMPCHINESE} \
-    "�Ҳ���ж�س���"
+    "找不到卸载程序。"
 
 LangString str_msg_rm_copy_fail  ${LANG_SIMPCHINESE} \
-    "�޷���ж�س����Ƶ���ʱĿ¼��"
+    "无法将卸载程序复制到临时目录。"
 
 LangString str_msg_rm_run_fail   ${LANG_SIMPCHINESE} \
-    "ִ��ж�س���ʧ�ܡ�"
+    "执行卸载程序失败。"
 
 LangString str_msg_abort_install ${LANG_SIMPCHINESE} \
-    "��װ�����˳���"
+    "安装程序将退出。"
 
 LangString str_msg_install_fail  ${LANG_SIMPCHINESE} \
-    "��װʧ�ܡ�ף���´κ��ˡ�"
+    "安装失败。祝您下次好运。"
 
 LangString str_msg_rm_exe_fail   ${LANG_SIMPCHINESE} \
-    "Ŀ¼��$vim_bin_path�����в����ļ�ɾ��ʧ�ܣ�$\r$\n\
-     ��ֻ���ֹ�ɾ����Ŀ¼��"
+    "目录“$vim_bin_path”下有部分文件删除失败！$\r$\n\
+     您只能手工删除该目录。"
 
 LangString str_msg_rm_root_fail  ${LANG_SIMPCHINESE} \
-    "���棺�޷�ɾ�� Vim ��װĿ¼��$vim_install_root����\
-     ��Ŀ¼�����������ļ���"
+    "警告：无法删除 Vim 安装目录“$vim_install_root”，\
+     该目录下仍有其他文件。"

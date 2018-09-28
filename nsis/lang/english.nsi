@@ -1,9 +1,9 @@
-# vi:set ts=8 sts=4 sw=4 et fdm=marker:
+﻿# vi:set ts=8 sts=4 sw=4 et fdm=marker:
 #
 # english.nsi: English language strings for gvim NSIS installer.
 #
 # Locale ID    : 1033
-# fileencoding : latin1
+# fileencoding : UTF-8
 # Author       : Guopeng Wen
 
 # The following macro pulls in NSIS language file and defines various

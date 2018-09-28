@@ -1,9 +1,9 @@
-# vi:set ts=8 sts=4 sw=4 et fdm=marker:
+ï»¿# vi:set ts=8 sts=4 sw=4 et fdm=marker:
 #
 # german.nsi : German language strings for gvim NSIS installer.
 #
 # Locale ID    : 1031
-# fileencoding : cp1252
+# fileencoding : UTF-8
 # Author       : Christian Brabandt, tux
 
 !include "script\helper_util.nsh"
@@ -15,7 +15,7 @@ ${VimAddLanguage} "German" "de"
 ##############################################################################
 
 LangString str_dest_folder          ${LANG_GERMAN} \
-    "Zielverzeichnis auswählen (muss auf $\"vim$\" enden)"
+    "Zielverzeichnis auswÃ¤hlen (muss auf $\"vim$\" enden)"
 
 LangString str_show_readme          ${LANG_GERMAN} \
     "README-Datei nach der Installation anzeigen"
@@ -28,7 +28,7 @@ LangString str_type_minimal         ${LANG_GERMAN} \
     "Minimal"
 
 LangString str_type_full            ${LANG_GERMAN} \
-    "Vollständig"
+    "VollstÃ¤ndig"
 
 
 ##############################################################################
@@ -54,45 +54,45 @@ LangString str_desc_console         ${LANG_GERMAN} \
 LangString str_section_batch        ${LANG_GERMAN} \
     ".bat-Dateien erstellen"
 LangString str_desc_batch           ${LANG_GERMAN} \
-    ".bat-Dateien erstellen, um Vim in der Konsole auszuführen."
+    ".bat-Dateien erstellen, um Vim in der Konsole auszufÃ¼hren."
 
 LangString str_group_icons          ${LANG_GERMAN} \
-    "Vim-Verknüpfungen erstellen"
+    "Vim-VerknÃ¼pfungen erstellen"
 LangString str_desc_icons           ${LANG_GERMAN} \
-    "Verknüpfungen mit Vim für einfachen Aufruf erstellen."
+    "VerknÃ¼pfungen mit Vim fÃ¼r einfachen Aufruf erstellen."
 
 LangString str_section_desktop      ${LANG_GERMAN} \
     "Auf dem Desktop"
 LangString str_desc_desktop         ${LANG_GERMAN} \
-    "Icons für GVim auf dem Desktop erstellen."
+    "Icons fÃ¼r GVim auf dem Desktop erstellen."
 
 LangString str_section_start_menu   ${LANG_GERMAN} \
-    "Im Startmenü"
+    "Im StartmenÃ¼"
 LangString str_desc_start_menu      ${LANG_GERMAN} \
-    "Vim im Programmverzeichnis des Startmenüs hinzufügen\
-     Windows 95 und höher."
+    "Vim im Programmverzeichnis des StartmenÃ¼s hinzufÃ¼gen\
+     Windows 95 und hÃ¶her."
 
 LangString str_section_quick_launch ${LANG_GERMAN} \
     "In der Schnellstartleiste"
 LangString str_desc_quick_launch    ${LANG_GERMAN} \
-    "Verknüpfung zu Vim in der Schnellstartleiste ablegen."
+    "VerknÃ¼pfung zu Vim in der Schnellstartleiste ablegen."
 
 LangString str_group_edit_with      ${LANG_GERMAN} \
-    "Vim zum Kontextmenü hinzufügen"
+    "Vim zum KontextmenÃ¼ hinzufÃ¼gen"
 LangString str_desc_edit_with       ${LANG_GERMAN} \
-    "Vim in das $\"Öffnen mit...$\"-Kontextmenü einfügen."
+    "Vim in das $\"Ã–ffnen mit...$\"-KontextmenÃ¼ einfÃ¼gen."
 
 LangString str_section_edit_with32  ${LANG_GERMAN} \
     "32-Bit-Version"
 LangString str_desc_edit_with32     ${LANG_GERMAN} \
-    "Vim in das $\"Öffnen mit...$\"-Kontextmenü \
-     für 32-Bit-Anwendungen integrieren."
+    "Vim in das $\"Ã–ffnen mit...$\"-KontextmenÃ¼ \
+     fÃ¼r 32-Bit-Anwendungen integrieren."
 
 LangString str_section_edit_with64  ${LANG_GERMAN} \
     "64-Bit-Version"
 LangString str_desc_edit_with64     ${LANG_GERMAN} \
-    "Vim in das $\"Öffnen mit...$\"-Kontextmenü \
-     für 64-Bit-Anwendungen integrieren."
+    "Vim in das $\"Ã–ffnen mit...$\"-KontextmenÃ¼ \
+     fÃ¼r 64-Bit-Anwendungen integrieren."
 
 LangString str_section_vim_rc       ${LANG_GERMAN} \
     "Standard-Konfigurationsdatei erstellen"
@@ -104,7 +104,7 @@ LangString str_group_plugin         ${LANG_GERMAN} \
     "Plugin-Verzeichnisse anlegen"
 LangString str_desc_plugin          ${LANG_GERMAN} \
     "Plugin-Verzeichnisse anlegen.  Plugins erlauben es, Vim \
-     um zusätzliche Funktionen zu erweitern."
+     um zusÃ¤tzliche Funktionen zu erweitern."
 
 LangString str_section_plugin_home  ${LANG_GERMAN} \
     "Privat"
@@ -116,7 +116,7 @@ LangString str_section_plugin_vim   ${LANG_GERMAN} \
     "Freigegeben"
 LangString str_desc_plugin_vim      ${LANG_GERMAN} \
     "Plugin-Verzeichnisse im Vim-Installationspfad erstellen. Diese werden \
-     für alle Benutzer dieses Systems genutzt."
+     fÃ¼r alle Benutzer dieses Systems genutzt."
 
 LangString str_section_vis_vim      ${LANG_GERMAN} \
     "VisVim-Erweiterung"
@@ -124,9 +124,9 @@ LangString str_desc_vis_vim         ${LANG_GERMAN} \
     "VisVim-Erweiterung zur Integration in Microsoft Visual Studio."
 
 LangString str_section_nls          ${LANG_GERMAN} \
-    "Unterstützung für andere Sprachen"
+    "UnterstÃ¼tzung fÃ¼r andere Sprachen"
 LangString str_desc_nls             ${LANG_GERMAN} \
-    "Dateien zur Unterstützung anderer Sprachen als Englisch installieren."
+    "Dateien zur UnterstÃ¼tzung anderer Sprachen als Englisch installieren."
 
 LangString str_unsection_register   ${LANG_GERMAN} \
     "Vim deinstallieren"
@@ -150,7 +150,7 @@ LangString str_msg_too_many_ver  ${LANG_GERMAN} \
      Bitte alte Versionen entfernen und noch einmal probieren."
 
 LangString str_msg_invalid_root  ${LANG_GERMAN} \
-    "Nicht gültiges Installationsverzeichnis: $vim_install_root!$\r$\n\
+    "Nicht gÃ¼ltiges Installationsverzeichnis: $vim_install_root!$\r$\n\
      Der Pfad muss auf $\"vim$\" enden."
 
 LangString str_msg_bin_mismatch  ${LANG_GERMAN} \
@@ -163,10 +163,10 @@ LangString str_msg_vim_running   ${LANG_GERMAN} \
      Bitte alle laufenden Vim-Prozesse vor dem Fortfahren beenden."
 
 LangString str_msg_register_ole  ${LANG_GERMAN} \
-    "Versuche OLE-Registrierung durchzuführen."
+    "Versuche OLE-Registrierung durchzufÃ¼hren."
 
 LangString str_msg_unreg_ole     ${LANG_GERMAN} \
-    "Versuche OLE-Registrierung zu löschen."
+    "Versuche OLE-Registrierung zu lÃ¶schen."
 
 LangString str_msg_rm_start      ${LANG_GERMAN} \
     "Deinstalliere die folgende Version:"
@@ -175,7 +175,7 @@ LangString str_msg_rm_fail       ${LANG_GERMAN} \
     "Deinstallation der Version fehlgeschlagen:"
 
 LangString str_msg_no_rm_key     ${LANG_GERMAN} \
-    "Deinstallationsschlüssel in der Registrierungsdatenbank nicht gefunden."
+    "DeinstallationsschlÃ¼ssel in der Registrierungsdatenbank nicht gefunden."
 
 LangString str_msg_no_rm_reg     ${LANG_GERMAN} \
     "Kein Uninstaller in der Registrierungsdatenbank gefunden."
@@ -184,7 +184,7 @@ LangString str_msg_no_rm_exe     ${LANG_GERMAN} \
     "Kein Zugriff auf den Uninstaller."
 
 LangString str_msg_rm_copy_fail  ${LANG_GERMAN} \
-    "Fehler beim Kopieren des Uninstallers in ein temporäres Verzeichnis."
+    "Fehler beim Kopieren des Uninstallers in ein temporÃ¤res Verzeichnis."
 
 LangString str_msg_rm_run_fail   ${LANG_GERMAN} \
     "Fehler beim Aufruf des Uninstallers."
@@ -196,8 +196,8 @@ LangString str_msg_install_fail  ${LANG_GERMAN} \
     "Installation fehlerhaft beendet."
 
 LangString str_msg_rm_exe_fail   ${LANG_GERMAN} \
-    "Einige Dateien im Pfad $vim_bin_path konnten nicht gelöscht werden!$\r$\n\
-     Diese Dateien müssen manuell gelöscht werden."
+    "Einige Dateien im Pfad $vim_bin_path konnten nicht gelÃ¶scht werden!$\r$\n\
+     Diese Dateien mÃ¼ssen manuell gelÃ¶scht werden."
 
 LangString str_msg_rm_root_fail  ${LANG_GERMAN} \
     "Achtung: Kann Verzeichnis $\"$vim_install_root$\" nicht entfernen, \

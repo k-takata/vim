@@ -1,10 +1,10 @@
-# vi:set ts=8 sts=4 sw=4 et fdm=marker:
+ï»¿# vi:set ts=8 sts=4 sw=4 et fdm=marker:
 #
 # dutch.nsi : Dutch language strings for gvim NSIS installer.
 #
 # Locale ID    : 1043
 # Locale Name  : nl
-# fileencoding : cp1252
+# fileencoding : UTF-8
 # Author       : Peter Odding <peter@peterodding.com>
 
 !include "script\helper_util.nsh"
@@ -52,20 +52,20 @@ LangString str_desc_console         ${LANG_DUTCH} \
     "Console versie van Vim (vim.exe)."
 
 LangString str_section_batch        ${LANG_DUTCH} \
-    "Creëer .bat bestanden"
+    "CreÃ«er .bat bestanden"
 LangString str_desc_batch           ${LANG_DUTCH} \
-    "Creëer .bat bestanden voor Vim varianten in de Windows map voor \
+    "CreÃ«er .bat bestanden voor Vim varianten in de Windows map voor \
      commando regel gebruik."
 
 LangString str_group_icons          ${LANG_DUTCH} \
-    "Creëer pictogrammen for Vim"
+    "CreÃ«er pictogrammen for Vim"
 LangString str_desc_icons           ${LANG_DUTCH} \
-    "Creëer pictogrammen voor Vim op verschillende locaties voor gemakkelijke toegang."
+    "CreÃ«er pictogrammen voor Vim op verschillende locaties voor gemakkelijke toegang."
 
 LangString str_section_desktop      ${LANG_DUTCH} \
     "Op het bureaublad"
 LangString str_desc_desktop         ${LANG_DUTCH} \
-    "Creëer pictogrammen voor Vim uitvoerbare bestanden op het bureaublad."
+    "CreÃ«er pictogrammen voor Vim uitvoerbare bestanden op het bureaublad."
 
 LangString str_section_start_menu   ${LANG_DUTCH} \
     "In de Programma's map in het start menu"
@@ -96,26 +96,26 @@ LangString str_desc_edit_with64     ${LANG_DUTCH} \
      voor 64-bit toepassingen."
 
 LangString str_section_vim_rc       ${LANG_DUTCH} \
-    "Creëer standaard configuratie"
+    "CreÃ«er standaard configuratie"
 LangString str_desc_vim_rc          ${LANG_DUTCH} \
-    "Creëer een standaard configuratie bestand (_vimrc) als er nog geen bestaat."
+    "CreÃ«er een standaard configuratie bestand (_vimrc) als er nog geen bestaat."
 
 LangString str_group_plugin         ${LANG_DUTCH} \
-    "Creëer Plugin mappen"
+    "CreÃ«er Plugin mappen"
 LangString str_desc_plugin          ${LANG_DUTCH} \
-    "Creëer plugin mappen.  Plugin mappen maken het mogelijk om \
+    "CreÃ«er plugin mappen.  Plugin mappen maken het mogelijk om \
      Vim uit te breiden door een bestand in een map te plaatsen."
 
 LangString str_section_plugin_home  ${LANG_DUTCH} \
-    "Privé"
+    "PrivÃ©"
 LangString str_desc_plugin_home     ${LANG_DUTCH} \
-    "Creëer plugin mappen in HOME (als je deze gedefinieerd hebt) \
+    "CreÃ«er plugin mappen in HOME (als je deze gedefinieerd hebt) \
      of Vim installatie map."
 
 LangString str_section_plugin_vim   ${LANG_DUTCH} \
     "Gedeeld"
 LangString str_desc_plugin_vim      ${LANG_DUTCH} \
-    "Creëer plugin mappen in Vim installatie map, deze worden gebruikt \
+    "CreÃ«er plugin mappen in Vim installatie map, deze worden gebruikt \
      voor iedereen op het systeem."
 
 LangString str_section_vis_vim      ${LANG_DUTCH} \
@@ -185,7 +185,7 @@ LangString str_msg_no_rm_exe     ${LANG_DUTCH} \
     "Kan geen toegang krijgen tot de uninstaller."
 
 LangString str_msg_rm_copy_fail  ${LANG_DUTCH} \
-    "Kon de uninstaller niet naar een tijdelijke map kopiëren."
+    "Kon de uninstaller niet naar een tijdelijke map kopiÃ«ren."
 
 LangString str_msg_rm_run_fail   ${LANG_DUTCH} \
     "Kon de uninstaller niet uitvoeren."
