@@ -15,15 +15,18 @@ I. Build Instruction for Vim NSIS Installer
 
     - UPX.  This is required if you want a compressed installer.  It's
       available at:
-        http://upx.sourceforge.net/
+        https://upx.github.io/
       The UPX install directory should be added to the PATH environment.
 
     - Build environment for Vim.
 
-2.  Prepare Vim source code for DOS/Windows build
+2.  Prepare Vim source code for Windows build
 
-    To build the Windows installer, the source tree of Vim needs to be
-    rearranged, and also some EOL conversion needs to be performed.
+    Using Git is the easiest way:
+        git clone https://github.com/vim/vim.git
+
+    Otherwise, to build the Windows installer, the source tree of Vim needs
+    to be rearranged, and also some EOL conversion needs to be performed.
 
     You can simply download the following two prepared source archives from
     Vim online (http://www.vim.org/download.php#pc):
@@ -38,36 +41,53 @@ I. Build Instruction for Vim NSIS Installer
         make dossrc
         make dosrt
 
-3.  Go to the src/ directory and build Windows 95/98/ME console version of
-    Vim.  Rename the output vim.exe as vimd32.exe and store it elsewhere.
+3.  Go to the src directory and build:
+	gvim.exe (the OLE version),
+	vim.exe,
+	vimrun.exe,
+	tee/tee.exe,
+	xxd/xxd.exe,
 
-4.  Go to the src/ directory and build Windows NT/2000/XP console version of
-    Vim.  Rename the output vim.exe as vimw32.exe and store it elsewhere.
+    Then execute tools/rename.bat to rename the executables. (mv command is
+    required.)
 
-5.  Go to the src/ directory and build the GUI version of Vim, with OLE
-    support enabled.  After build complete, you should rename the following
-    outputs:
-	src/gvim.exe    -> src/gvim_ole.exe
-	src/xxd\xxd.exe -> src/xxdw32.exe
+4.  Go to the GvimExt directory and build gvimext.dll (or get it from a binary
+    archive).  Both 64- and 32-bit versions are needed and should be placed
+    as follows:
+	64-bit: src/GvimExt/gvimext64.dll
+	32-bit: src/GvimExt/gvimext.dll
 
-6.  Copy those renamed executables created in steps 3 and 4 back into the src\
-    directory.
+5.  Go to the VisVim directory and build VisVim.dll (or get it from a binary
+    archive).
 
-7.  Go to the src/GvimExt/ directory and
-    - Build 32-bit version of gvimext.dll, rename it to gvimext32.dll;
-    - Build 64-bit version of gvimext.dll, rename it to gvimext64.dll.
-    You may install the official release of Vim from here:
-        http://www.vim.org/download.php#pc
-    and copy them from the binary directory.
-
-8.  Go to the src/VisVim/ directory and build VisVim.dll (or get it from
-    installed Vim).
-
-9.  Get a "diff.exe" program (for example, from installed Vim) and put it in
+6.  Get a "diff.exe" program (for example, from installed Vim) and put it in
     the "../.." directory (above the "vim##" directory, it's the same for all
     Vim versions).
 
-10. Go to src/nsis/ to build the installer with:
+7.  Do "make uganda.nsis.txt" in runtime/doc.  This requires sed, you may have
+    to do this on Unix.  Make sure the file is in DOS file format!
+
+8.  Get gettext and iconv DLLs from the following site:
+	https://github.com/mlocati/gettext-iconv-windows/releases
+    Both 64- and 32-bit versions are needed.
+    Download the files gettextX.X.X.X-iconvX.XX-shared-{32,64}.zip, extract
+    DLLs and place them as follows:
+
+	<GETTEXT directory>
+	    |
+	    + gettext32/
+	    |	libintl-8.dll
+	    |	libiconv-2.dll
+	    |	libgcc_s_sjlj-1.dll
+	    |
+	    ` gettext64/
+		libintl-8.dll
+		libiconv-2.dll
+
+    The default <GETTEXT directory> is "..", however, you can change it by
+    passing /DGETTEXT=... option to the makensis command.
+
+9. Go to src/nsis/ to build the installer with:
 	makensis gvim.nsi
 
 ==============================================================================
