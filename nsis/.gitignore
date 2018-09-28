@@ -1,0 +1,5 @@
+vim_defines.conf
+vim_install_nls.nsi
+vim_install_rt.nsi
+vim_uninst_nls.nsi
+vim_uninst_rt.nsi
