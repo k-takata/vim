@@ -40,19 +40,8 @@
 # Comment the next line if you do not want to add Native Language Support
 !define HAVE_NLS
 
-# Uncomment the following line if you have newer version of gettext that uses
-# iconv.dll for encoding conversion.  Please note you should rename "intl.dll"
-# from "gettext-win32" archive to "libintl.dll".
-#!define HAVE_ICONV
-
 # Comment the next line if you do not want to include VisVim extension:
 !define HAVE_VIS_VIM
-
-# Uncomment the following line if you have built support for XPM and need to
-# include XPM DLL in the installer.  XPM is a library for X PixMap images, it
-# can be downloaded from:
-#   http://gnuwin32.sourceforge.net/packages/xpm.htm
-#!define HAVE_XPM
 
 # Uncomment the following line to create a multilanguage installer:
 #!define HAVE_MULTI_LANG
@@ -1127,13 +1116,6 @@ Section $(str_section_exe) id_section_exe
     # Generate NSIS commands to install runtime files:
     ${VimGenFileCmdsInstall} "data\runtime_files.list" \
         "vim_install_rt.nsi" "vim_uninst_rt.nsi"
-
-    # Install XPM DLL:
-    !ifdef HAVE_XPM
-        ${Log} "Install $vim_bin_path\xpm4.dll"
-        !insertmacro InstallLib DLL NOTSHARED REBOOT_NOTPROTECTED \
-            "${VIMRT}\xpm4.dll" "$vim_bin_path\xpm4.dll" "$vim_bin_path"
-    !endif
 
     ${LogSectionEnd}
 SectionEnd
@@ -3085,13 +3067,6 @@ Section "un.$(str_unsection_exe)" id_unsection_exe
     ${If} ${FileExists} "$vim_bin_path\GvimExt64\*.*"
         ${Logged1} RMDir "$vim_bin_path\GvimExt64"
     ${EndIf}
-
-    # Remove XPM:
-    !ifdef HAVE_XPM
-        ${Log} "Remove $vim_bin_path\xpm4.dll"
-        !insertmacro UninstallLib DLL NOTSHARED REBOOT_NOTPROTECTED \
-            "$vim_bin_path\xpm4.dll"
-    !endif
 
     # Pull in generated uninstall commands:
     ClearErrors
