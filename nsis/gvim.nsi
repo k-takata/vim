@@ -90,6 +90,7 @@
 !include "Library.nsh"     # For DLL install
 !include "LogicLib.nsh"
 !include "MUI2.nsh"
+!include "nsDialogs.nsh"
 !include "Sections.nsh"    # For section control
 !include "StrFunc.nsh"
 !include "TextFunc.nsh"
@@ -118,6 +119,14 @@ Var vim_batch_ver_found   # Working variable: version found in batch file
 Var vim_rc_changed        # Working variable: 1 if RC file changed.
 Var vim_last_copy         # Flag: Is this the last Vim on the system?
 Var vim_rm_common         # Flag: Should we remove common files?
+Var vim_dialog
+Var vim_nsd_keymap_1
+Var vim_nsd_keymap_2
+Var vim_nsd_mouse_1
+Var vim_nsd_mouse_2
+Var vim_nsd_mouse_3
+Var vim_keymap_stat
+Var vim_mouse_stat
 
 # List of alphanumeric:
 !define ALPHA_NUMERIC     "abcdefghijklmnopqrstuvwxyz0123456789"
@@ -143,6 +152,7 @@ Var vim_rm_common         # Flag: Should we remove common files?
 # Registry keys:
 !define REG_KEY_WINDOWS   "software\Microsoft\Windows\CurrentVersion"
 !define REG_KEY_UNINSTALL "${REG_KEY_WINDOWS}\Uninstall"
+!define REG_KEY_UNINST_PROD "${REG_KEY_UNINSTALL}\${VIM_PRODUCT_NAME}"
 !define REG_KEY_SILENT    "AllowSilent"
 !define REG_KEY_SH_EXT    "${REG_KEY_WINDOWS}\Shell Extensions\Approved"
 !define REG_KEY_VIM       "Software\Vim"
@@ -314,6 +324,7 @@ SilentInstall             normal
 !insertmacro MUI_PAGE_WELCOME
 !insertmacro MUI_PAGE_LICENSE "${VIMRT}\doc\uganda.nsis.txt"
 !insertmacro MUI_PAGE_COMPONENTS
+Page custom VimSetCustom VimValidateCustom
 !define MUI_PAGE_CUSTOMFUNCTION_LEAVE VimFinalCheck
 !insertmacro MUI_PAGE_DIRECTORY
 !insertmacro MUI_PAGE_INSTFILES
@@ -977,6 +988,29 @@ SilentInstall             normal
 !macroend
 
 # ----------------------------------------------------------------------------
+# macro VimCreateVimrc $_VIMRC_SPEC $_VIMRC_TMPL                          {{{2
+#   Create a specified vimrc file.
+#
+#   Parameters:
+#     The following parameters should be pushed onto stack in order.
+#     $_VIMRC_SPEC : vimrc file specification.
+#     $_VIMRC_TMPL : Name of the vimrc file template (in target environment).
+#   Returns:
+#     N/A
+# ----------------------------------------------------------------------------
+!define VimCreateVimrc "!insertmacro _VimCreateVimrc"
+!macro _VimCreateVimrc _VIMRC_SPEC _VIMRC_TMPL
+    ${Log} "Create vimrc file: ${_VIMRC_SPEC}"
+    ${LineFind} "${_VIMRC_TMPL}" "${_VIMRC_SPEC}" "" "_VimCreateVimrcCallback"
+!macroend
+
+!define un.VimCreateVimrc "!insertmacro un._VimCreateVimrc"
+!macro un._VimCreateVimrc _VIMRC_SPEC _VIMRC_TMPL
+    ${Log} "Create vimrc file: ${_VIMRC_SPEC}"
+    ${LineFind} "${_VIMRC_TMPL}" "${_VIMRC_SPEC}" "" "un._VimCreateVimrcCallback"
+!macroend
+
+# ----------------------------------------------------------------------------
 # macro VimCreateBatches $_BATCH_SPEC $_BATCH_TMPL                        {{{2
 #   Create specified batch files.
 #
@@ -1268,13 +1302,19 @@ Section $(str_section_vim_rc) id_section_vimrc
 
     ${LogSectionStart}
 
+    ${Logged4} WriteRegStr SHCTX "${REG_KEY_UNINST_PROD}" "keyremap" "$vim_keymap_stat"
+    ${Logged4} WriteRegStr SHCTX "${REG_KEY_UNINST_PROD}" "mouse" "$vim_mouse_stat"
+
     # Write default _vimrc only if the file does not exist.  We'll test for
     # .vimrc (and its short version) and _vimrc:
     ${IfNot}    ${FileExists} "$vim_install_root\_vimrc"
     ${AndIfNot} ${FileExists} "$vim_install_root\.vimrc"
     ${AndIfNot} ${FileExists} "$vim_install_root\vimrc~1"
         ${Logged1} SetOutPath "$vim_install_root"
-        ${Logged2} File /oname=_vimrc "data\mswin_vimrc.vim"
+        GetTempFileName $R0
+        ${Logged2} File "/oname=$R0" "data\mswin_vimrc_template.vim"
+        ${VimCreateVimrc} "$vim_install_root\_virmc" "$R0"
+        ${Logged1} Delete "$R0"
     ${Else}
         ${Log} "Found existing vimrc, skip vimrc install."
     ${EndIf}
@@ -1611,15 +1651,11 @@ FunctionEnd
 Function .onInstSuccess
     # Calculate EstimatedSize:
     Push $R0
-    Push $3
     Push $9
     ${Logged2} SectionGetSize ${id_section_exe} $9
     ${LoopMatrix} "${VIM_INSTALL_SECS}" "_VimCalcEstimatedSize" "" "" "" $R0
-    # $3 - Uninstall registry key.
-    StrCpy $3 "${REG_KEY_UNINSTALL}\${VIM_PRODUCT_NAME}"
-    ${Logged4} WriteRegDWORD SHCTX "$3" "EstimatedSize" "$9"
+    ${Logged4} WriteRegDWORD SHCTX "${REG_KEY_UNINST_PROD}" "EstimatedSize" "$9"
     Pop $9
-    Pop $3
     Pop $R0
 
     WriteUninstaller ${VIM_BIN_DIR}\${VIM_UNINSTALLER}
@@ -2323,6 +2359,114 @@ Function VimRmOldVer
 FunctionEnd
 
 # ----------------------------------------------------------------------------
+# Function VimSetCustom                                                   {{{2
+#   Setup the custom page for setting of _vimrc
+# ----------------------------------------------------------------------------
+Function VimSetCustom
+    # Check if a _vimrc should be created
+    ${IfNot} ${SectionIsSelected} ${id_section_vimrc}
+        Abort
+    ${EndIf}
+
+    !insertmacro MUI_HEADER_TEXT $(str_vimrc_page_title) $(str_vimrc_page_subtitle)
+
+    Push $0
+
+    nsDialogs::Create 1018
+    Pop $vim_dialog
+
+    ${If} $vim_dialog == error
+        Abort
+    ${EndIf}
+
+    GetFunctionAddress $0 VimValidateCustom
+    nsDialogs::OnBack $0
+
+    # 1st group - Key remapping
+    ${NSD_CreateGroupBox} 0 0 100% 38% $(str_msg_keymap_title)
+    Pop $0
+
+    ${NSD_CreateRadioButton} 5% 8% 90% 8% $(str_msg_keymap_default)
+    Pop $vim_nsd_keymap_1
+    ${NSD_AddStyle} $vim_nsd_keymap_1 ${WS_GROUP}
+
+    ${NSD_CreateRadioButton} 5% 18% 90% 16% $(str_msg_keymap_windows)
+    Pop $vim_nsd_keymap_2
+
+    ${If} $vim_keymap_stat == ""
+        ${Logged4} ReadRegStr $0 SHCTX "${REG_KEY_UNINST_PROD}" "keyremap"
+    ${Else}
+        StrCpy $0 $vim_keymap_stat
+    ${EndIf}
+    ${If} $0 == "windows"
+        ${NSD_SetState} $vim_nsd_keymap_2 ${BST_CHECKED}
+    ${Else} # default
+        ${NSD_SetState} $vim_nsd_keymap_1 ${BST_CHECKED}
+    ${EndIf}
+
+
+    # 2nd group - Mouse behavior
+    ${NSD_CreateGroupBox} 0 42% 100% 58% $(str_msg_mouse_title)
+    Pop $0
+
+    ${NSD_CreateRadioButton} 5% 48% 90% 16% $(str_msg_mouse_default)
+    Pop $vim_nsd_mouse_1
+    ${NSD_AddStyle} $vim_nsd_mouse_1 ${WS_GROUP}
+
+    ${NSD_CreateRadioButton} 5% 65% 90% 16% $(str_msg_mouse_windows)
+    Pop $vim_nsd_mouse_2
+
+    ${NSD_CreateRadioButton} 5% 81% 90% 16% $(str_msg_mouse_unix)
+    Pop $vim_nsd_mouse_3
+
+    ${If} $vim_mouse_stat == ""
+        ${Logged4} ReadRegStr $0 SHCTX "${REG_KEY_UNINST_PROD}" "mouse"
+    ${Else}
+        StrCpy $0 $vim_mouse_stat
+    ${EndIf}
+    ${If} $0 == "xterm"
+        ${NSD_SetState} $vim_nsd_mouse_3 ${BST_CHECKED}
+    ${ElseIf} $0 == "windows"
+        ${NSD_SetState} $vim_nsd_mouse_2 ${BST_CHECKED}
+    ${Else} # defualt
+        ${NSD_SetState} $vim_nsd_mouse_1 ${BST_CHECKED}
+    ${EndIf}
+
+    nsDialogs::Show
+
+    Pop $0
+FunctionEnd
+
+# ----------------------------------------------------------------------------
+# Function VimValidateCustom                                              {{{2
+#   Validate the custom page for setting of _vimrc
+# ----------------------------------------------------------------------------
+Function VimValidateCustom
+    Push $0
+
+    ${NSD_GetState} $vim_nsd_keymap_1 $0
+    ${If} $0 == ${BST_CHECKED}
+        StrCpy $vim_keymap_stat "default"
+    ${Else}
+        StrCpy $vim_keymap_stat "windows"
+    ${EndIf}
+
+    ${NSD_GetState} $vim_nsd_mouse_1 $0
+    ${If} $0 == ${BST_CHECKED}
+        StrCpy $vim_mouse_stat "default"
+    ${Else}
+        ${NSD_GetState} $vim_nsd_mouse_2 $0
+        ${If} $0 == ${BST_CHECKED}
+            StrCpy $vim_mouse_stat "windows"
+        ${Else}
+            StrCpy $vim_mouse_stat "xterm"
+        ${EndIf}
+    ${EndIf}
+
+    Pop $0
+FunctionEnd
+
+# ----------------------------------------------------------------------------
 # Function VimFinalCheck                                                  {{{2
 #   Final check before install.
 #
@@ -2561,6 +2705,74 @@ Function _VimCreateBatchCallback
 FunctionEnd
 
 # ----------------------------------------------------------------------------
+# Function _VimCreateVimrcCallback                                        {{{2
+#   Callback function for LineFind to manipulate vimrc file template.
+#
+#   This callback function will replace <<KEY-REMAPPING>> and
+#   <<MOUSE-BEHAVIOR>> space holders in the template files.
+#
+#   LineFind will set the following registers upon entrance:
+#     $R9 - current line
+#     $R8 - current line number
+#     $R7 - current line negative number
+#     $R6 - current range of lines
+#     $R5 - handle of a file opened to read
+#     $R4 - handle of a file opened to write ($R4="" if "/NUL")
+#
+#     you can use any string functions
+#     $R0-$R3  are not used (save data in them).
+#     ...
+#
+#   This function should returns one of the following strings on the top of
+#   the stack:
+#     "StopLineFind" : Exit from function
+#     "SkipWrite"    : Skip current line (ignored if "/NUL")
+#     Otherwise      : Write the content of $R9 to the output file.
+# ----------------------------------------------------------------------------
+!macro _VimCreateVimrcCallback un
+Function ${un}_VimCreateVimrcCallback
+    # Remove CR and/or LF.  This can also convert the input file to DOS format
+    # (the input file could be UNIX format if compiled from source directly):
+    ${TrimNewLines} "$R9" $R9
+
+    ${If} "$R9" S== "<<KEY-REMAPPING>>"
+        # Replace space holder with real config:
+        Push $0
+        ${Logged4} ReadRegStr $0 SHCTX "${REG_KEY_UNINST_PROD}" "keyremap"
+        ${If} $0 == "windows"
+            FileWrite $R4 "$\r$\n"
+            FileWrite $R4 "$\" Remap for MS Windows:$\r$\n"
+            FileWrite $R4 "source $$VIMRUNTIME/mswin.vim$\r$\n"
+        ${EndIf}
+        Pop $0
+        Push "SkipWrite"
+    ${ElseIf} "$R9" S== "<<MOUSE-BEHAVIOR>>"
+        # Replace space holder with real config:
+        Push $0
+        ${Logged4} ReadRegStr $0 SHCTX "${REG_KEY_UNINST_PROD}" "mouse"
+        ${If} $0 == "windows"
+            FileWrite $R4 "$\r$\n"
+            FileWrite $R4 "$\" MS Windows behavior for mouse and selection:$\r$\n"
+            FileWrite $R4 "behave mswin$\r$\n"
+        ${ElseIf} $0 == "xterm"
+            FileWrite $R4 "$\r$\n"
+            FileWrite $R4 "$\" xterm behavior for mouse and selection:$\r$\n"
+            FileWrite $R4 "behave xterm$\r$\n"
+        ${EndIf}
+        Pop $0
+        Push "SkipWrite"
+    ${Else}
+        # Write the original line, except EOL is changed to DOS format:
+        StrCpy $R9 "$R9$\r$\n"
+        Push ""
+    ${EndIf}
+FunctionEnd
+!macroend
+
+!insertmacro _VimCreateVimrcCallback ""
+!insertmacro _VimCreateVimrcCallback "un."
+
+# ----------------------------------------------------------------------------
 # Function VimRegShellExt                                                 {{{2
 #   Register vim shell extension.
 #
@@ -2635,7 +2847,7 @@ Function VimRegUninstallInfoCallback
     ${ExchAt} 4 $0   # Col 1: Registry type STR|DW
 
     # $3 - Uninstall registry key.
-    StrCpy $3 "${REG_KEY_UNINSTALL}\${VIM_PRODUCT_NAME}"
+    StrCpy $3 "${REG_KEY_UNINST_PROD}"
 
     ${If}     $0 S== "STR"
         ${Logged4} WriteRegStr   SHCTX "$3" "$1" "$2"
@@ -2803,7 +3015,7 @@ Section "un.$(str_unsection_register)" id_unsection_register
 
     # Remove uninstall information:
     ${Logged3} DeleteRegKey /ifempty SHCTX \
-        "${REG_KEY_UNINSTALL}\${VIM_PRODUCT_NAME}"
+        "${REG_KEY_UNINST_PROD}"
 
     # We may have been put to the background when uninstall did something.
     ${IfNotThen} ${Silent} ${|} BringToFront ${|}
@@ -3122,10 +3334,14 @@ FunctionEnd
 Function un.VimRmConfig
     Push $R0  # Name of temporary file to store original vimrc.
     Push $R1  # Return code from LoopArray, ignored
+    Push $R2  # Name of vimrc template file.
 
     # Write the original _vimrc to a temporary file:
+    GetTempFileName $R2
+    ${Logged2} File "/oname=$R2" "data\mswin_vimrc_template.vim"
     GetTempFileName $R0
-    ${Logged2} File "/oname=$R0" "data\mswin_vimrc.vim"
+    ${un.VimCreateVimrc} "$R0" "$R2"
+    ${Logged1} Delete "$R2"
 
     # Remove all possible variants that's identical to the original RC file:
     ${LoopArray} "${VIM_RC_VARIANTS}" "un._VimRmConfigCallback" \
@@ -3134,6 +3350,7 @@ Function un.VimRmConfig
     # Remove the temporary file:
     ${Logged1} Delete "$R0"
 
+    Pop $R2
     Pop $R1
     Pop $R0
 FunctionEnd

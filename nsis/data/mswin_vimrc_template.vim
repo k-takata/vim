@@ -2,12 +2,8 @@
 "
 " Use Vim settings with all sorts of enhancement.
 source $VIMRUNTIME/vimrc_example.vim
-
-" Remap for MS Windows:
-source $VIMRUNTIME/mswin.vim
-
-" MS Windows behavior for mouse and selection:
-behave mswin
+<<KEY-REMAPPING>>
+<<MOUSE-BEHAVIOR>>
 
 " Use the diff.exe that comes with the self-extracting gvim.exe, if internal
 " diff is not supported:
