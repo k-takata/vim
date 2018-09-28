@@ -289,7 +289,7 @@ SilentInstall             normal
 !define MUI_HEADERIMAGE_UNBITMAP           "icons\un_header.bmp"
 
 !define MUI_COMPONENTSPAGE_SMALLDESC
-!define MUI_DIRECTORYPAGE_TEXT_DESTINATION $(str_dest_folder)
+#!define MUI_DIRECTORYPAGE_TEXT_DESTINATION $(str_dest_folder)
 !define MUI_LICENSEPAGE_CHECKBOX
 !define MUI_FINISHPAGE_RUN                 "$vim_bin_path\gvim.exe"
 !define MUI_FINISHPAGE_RUN_TEXT            $(str_show_readme)
@@ -738,11 +738,14 @@ Page custom VimSetCustom VimValidateCustom
 !macro _VimVerifyRootDir _INPUT_DIR _VALID
     push $R0
     StrCpy $R0 ${_INPUT_DIR} 3 -3
-    ${If} $R0 != "vim"
-        StrCpy $R0 0
-    ${Else}
-        StrCpy $R0 1
-    ${EndIf}
+    #${If} $R0 != "vim"
+    #    StrCpy $R0 0
+    #${Else}
+    #    StrCpy $R0 1
+    #${EndIf}
+
+    # Now we accept all paths
+    StrCpy $R0 1
     Exch $R0
     Pop  ${_VALID}
 !macroend
