@@ -1300,7 +1300,7 @@ Section $(str_section_vim_rc) id_section_vimrc
         ${Logged1} SetOutPath "$vim_install_root"
         GetTempFileName $R0
         ${Logged2} File "/oname=$R0" "data\mswin_vimrc_template.vim"
-        ${VimCreateVimrc} "$vim_install_root\_virmc" "$R0"
+        ${VimCreateVimrc} "$vim_install_root\_vimrc" "$R0"
         ${Logged1} Delete "$R0"
     ${Else}
         ${Log} "Found existing vimrc, skip vimrc install."
