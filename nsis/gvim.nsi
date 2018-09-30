@@ -42,7 +42,10 @@
 !include LogicLib.nsh
 !include x64.nsh
 
-Name "Vim ${VER_MAJOR}.${VER_MINOR}"
+!define PRODUCT		"Vim ${VER_MAJOR}.${VER_MINOR}"
+!define UNINST_REG_KEY	"Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT}"
+
+Name "${PRODUCT}"
 OutFile gvim${VER_MAJOR}${VER_MINOR}.exe
 CRCCheck force
 SetCompressor /SOLID lzma
@@ -195,7 +198,7 @@ Function un.GetParent
 FunctionEnd
 
 ##########################################################
-Section "Vim executables and runtime files"
+Section "Vim executables and runtime files" sec_main_id
 	SectionIn 1 2 3 RO
 
 	# we need also this here if the user changes the instdir
@@ -299,7 +302,7 @@ Section "Vim executables and runtime files"
 SectionEnd
 
 ##########################################################
-Section "Vim console program (vim.exe)"
+Section "Vim console program (vim.exe)" sec_cons_id
 	SectionIn 1 3
 
 	SetOutPath $0
@@ -400,7 +403,7 @@ Section "Create plugin directories in VIM"
 SectionEnd
 
 ##########################################################
-Section "VisVim Extension for MS Visual Studio"
+Section "VisVim Extension for MS Visual Studio" sec_visvim_id
 	SectionIn 3
 
 	SetOutPath $0
@@ -410,7 +413,7 @@ SectionEnd
 
 ##########################################################
 !ifdef HAVE_NLS
-Section "Native Language Support"
+Section "Native Language Support" sec_nls_id
 	SectionIn 1 3
 
 	SetOutPath $0\lang
@@ -489,6 +492,36 @@ SectionEnd
 
 ##########################################################
 Section -post
+
+	# Get estimated install size
+	SectionGetSize ${sec_main_id} $3
+	${If} ${SectionIsSelected} ${sec_cons_id}
+	  SectionGetSize ${sec_cons_id} $4
+	  IntOp $3 $3 + $4
+	${EndIf}
+	${If} ${SectionIsSelected} ${sec_gvimext_id}
+	  SectionGetSize ${sec_gvimext_id} $4
+	  IntOp $3 $3 + $4
+	${EndIf}
+	${If} ${SectionIsSelected} ${sec_visvim_id}
+	  SectionGetSize ${sec_visvim_id} $4
+	  IntOp $3 $3 + $4
+	${EndIf}
+	${If} ${SectionIsSelected} ${sec_nls_id}
+	  SectionGetSize ${sec_nls_id} $4
+	  IntOp $3 $3 + $4
+	${EndIf}
+
+	# Register EstimatedSize.
+	# Other information will be set by the install.exe.
+	${If} ${RunningX64}
+	  SetRegView 64
+	${EndIf}
+	WriteRegDWORD HKLM "${UNINST_REG_KEY}" "EstimatedSize" $3
+	${If} ${RunningX64}
+	  SetRegView lastused
+	${EndIf}
+
 	BringToFront
 SectionEnd
 
