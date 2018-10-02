@@ -36,8 +36,8 @@ Unicode true
 # Comment the next line if you do not want to add Native Language Support
 !define HAVE_NLS
 
-# Comment the next line if you do not want to include VisVim extension:
-!define HAVE_VIS_VIM
+# Uncomment the next line if you want to include VisVim extension:
+#!define HAVE_VIS_VIM
 
 # Comment the following line to create a multilanguage installer:
 !define HAVE_MULTI_LANG
@@ -47,7 +47,9 @@ Unicode true
 # ----------- No configurable settings below this line -----------
 
 !include "Library.nsh"		# For DLL install
-!include "UpgradeDLL.nsh"	# for VisVim.dll
+!ifdef HAVE_VIS_VIM
+  !include "UpgradeDLL.nsh"	# for VisVim.dll
+!endif
 !include "LogicLib.nsh"
 !include "MUI2.nsh"
 !include "nsDialogs.nsh"
