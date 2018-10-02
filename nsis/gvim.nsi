@@ -177,17 +177,18 @@ Function ${un}GetParent
   Push $1
   Push $2
   StrCpy $1 -1
-  loop:
+  ${Do}
     StrCpy $2 $0 1 $1
-    StrCmp $2 "" exit
-    StrCmp $2 "\" exit
+    ${If} $2 == ""
+    ${OrIf} $2 == "\"
+      ${ExitDo}
+    ${EndIf}
     IntOp $1 $1 - 1
-  Goto loop
-  exit:
-    StrCpy $0 $0 $1
-    Pop $2
-    Pop $1
-    Exch $0 ; put $0 on top of stack, restore $0 to original value
+  ${Loop}
+  StrCpy $0 $0 $1
+  Pop $2
+  Pop $1
+  Exch $0 ; put $0 on top of stack, restore $0 to original value
 FunctionEnd
 !macroend
 
