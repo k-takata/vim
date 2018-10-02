@@ -22,7 +22,7 @@ LangString ^UninstallCaption ${LANG_JAPANESE} \
 # These should be better to be fixed by the NSIS upstream.
 LangString ^SpaceAvailable   ${LANG_JAPANESE} \
         "利用可能なディスク容量："
-LangString ^SpaceRequired ${LANG_JAPANESE} \
+LangString ^SpaceRequired    ${LANG_JAPANESE} \
         "必要なディスク容量："
 
 ##############################################################################

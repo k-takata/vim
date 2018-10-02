@@ -100,8 +100,8 @@ RequestExecutionLevel highest
 !define MUI_FINISHPAGE_RUN_TEXT            $(str_show_readme)
 !define MUI_FINISHPAGE_RUN_PARAMETERS      "-R $\"$0\README.txt$\""
 
-# This adds '\vim' to the user choice automagically.  The actual value is
-# obtained below with ReadINIStr.
+# This adds '\Vim' to the user choice automagically.  The actual value is
+# obtained below with CheckOldVim.
 InstallDir "$PROGRAMFILES\Vim"
 
 # Types of installs we can perform:
@@ -273,7 +273,7 @@ Section "$(str_section_old_ver)" id_section_old_ver
 	nsExec::Exec "$TEMP\install.exe -uninstall-check"
 	Pop $3
 	Delete $TEMP\install.exe
-	Delete $TEMP\vimini.ini
+	Delete $TEMP\vimini.ini   # install.exe creates this, but we don't need it.
 
 	# We may have been put to the background when uninstall did something.
 	BringToFront
@@ -319,7 +319,7 @@ Function .onInstSuccess
 FunctionEnd
 
 Function .onInstFailed
-  MessageBox MB_OK|MB_ICONEXCLAMATION "Installation failed. Better luck next time."
+  MessageBox MB_OK|MB_ICONEXCLAMATION "$(str_msg_install_fail)"
 FunctionEnd
 
 ##########################################################
