@@ -194,6 +194,35 @@ ReserveFile ${VIMSRC}\installw32.exe
 ##########################################################
 # Functions
 
+# Get parent directory
+# Share this function both on installer and uninstaller
+!macro GetParent un
+Function ${un}GetParent
+  Exch $0 ; old $0 is on top of stack
+  Push $1
+  Push $2
+  StrCpy $1 -1
+  ${Do}
+    StrCpy $2 $0 1 $1
+    ${If} $2 == ""
+    ${OrIf} $2 == "\"
+      ${ExitDo}
+    ${EndIf}
+    IntOp $1 $1 - 1
+  ${Loop}
+  StrCpy $0 $0 $1
+  Pop $2
+  Pop $1
+  Exch $0 ; put $0 on top of stack, restore $0 to original value
+FunctionEnd
+!macroend
+
+!insertmacro GetParent ""
+!insertmacro GetParent "un."
+
+# Check if Vim is already installed.
+# return: Stack #0: Status. 1: installed. 0: not installed.
+#         Stack #1: Installed directory.
 Function CheckOldVim
   Push $0
   Push $R0
@@ -205,7 +234,7 @@ Function CheckOldVim
   ${EndIf}
 
   ClearErrors
-  StrCpy $0 0	  # Found flag
+  StrCpy $0 0     # Found flag
   StrCpy $R0 0    # Sub-key index
   StrCpy $R1 ""   # Sub-key
   ${Do}
@@ -240,7 +269,11 @@ Function CheckOldVim
       ${Continue}
     ${EndIf}
 
-    StrCpy $0 1	  # Found
+    StrCpy $0 1   # Found
+    Push $R2
+    call GetParent
+    call GetParent
+    Pop $R0   # Vim directory
     ${ExitDo}
 
   ${Loop}
@@ -251,10 +284,12 @@ Function CheckOldVim
 
   Pop $R2
   Pop $R1
-  Pop $R0
-  Exch $0 ; put $0 on top of stack, restore $0 to original value
+  Exch $R0 # put $R0 on top of stack, restore $R0 to original value
+  Exch
+  Exch $0  # put $0 on top of stack, restore $0 to original value
 FunctionEnd
 
+##########################################################
 Section "$(str_section_old_ver)" id_section_old_ver
 	SectionIn 1 2 3 RO
 
@@ -264,11 +299,13 @@ Section "$(str_section_old_ver)" id_section_old_ver
 	nsExec::Exec "$TEMP\install.exe -uninstall-check"
 	Pop $3
 	Delete $TEMP\install.exe
+	Delete $TEMP\vimini.ini
 
 	# We may have been put to the background when uninstall did something.
 	BringToFront
 SectionEnd
 
+##########################################################
 Function .onInit
 #  MessageBox MB_YESNO|MB_ICONQUESTION \
 #	"This will install Vim ${VER_MAJOR}.${VER_MINOR} on your computer.$\n Continue?" \
@@ -277,31 +314,27 @@ Function .onInit
 #	    Abort ; causes installer to quit.
 #	NoAbort:
 
+  # Check $VIM
+  ReadEnvStr $INSTDIR "VIM"
+
   call CheckOldVim
-  Pop $3
+  Pop $3  # status
+  Pop $4  # Vim directory
   ${If} $3 == 0
     # No old versions of Vim found. Unselect and hide the section.
     !insertmacro UnselectSection ${id_section_old_ver}
     SectionSetInstTypes ${id_section_old_ver} 0
     SectionSetText ${id_section_old_ver} ""
+  ${Else}
+    ${If} $INSTDIR == ""
+      StrCpy $INSTDIR $4
+    ${EndIf}
   ${EndIf}
 
-  # Install will have created a file for us that contains the directory where
-  # we should install.  This is $VIM if it's set.  This appears to be the only
-  # way to get the value of $VIM here!?
-  ReadINIStr $INSTDIR $TEMP\vimini.ini vimini dir
-  Delete $TEMP\vimini.ini
-
-  # If ReadINIStr failed or did not find a path: use the default dir.
+  # If did not find a path: use the default dir.
   ${If} $INSTDIR == ""
     StrCpy $INSTDIR "$PROGRAMFILES\Vim"
   ${EndIf}
-
-  # Should check for the value of $VIM and use it.  Unfortunately I don't know
-  # how to obtain the value of $VIM
-  # IfFileExists "$VIM" 0 No_Vim
-  #   StrCpy $INSTDIR "$VIM"
-  # No_Vim:
 
   # User variables:
   # $0 - holds the directory the executables are installed to
@@ -347,25 +380,6 @@ FunctionEnd
 #  MessageBox MB_OK|MB_ICONINFORMATION \
 #  "Vim ${VER_MAJOR}.${VER_MINOR} has been (partly) removed from your system"
 #FunctionEnd
-
-Function un.GetParent
-  Exch $0 ; old $0 is on top of stack
-  Push $1
-  Push $2
-  StrCpy $1 -1
-  ${Do}
-    StrCpy $2 $0 1 $1
-    ${If} $2 == ""
-    ${OrIf} $2 == "\"
-      ${ExitDo}
-    ${EndIf}
-    IntOp $1 $1 - 1
-  ${Loop}
-  StrCpy $0 $0 $1
-  Pop $2
-  Pop $1
-  Exch $0 ; put $0 on top of stack, restore $0 to original value
-FunctionEnd
 
 ##########################################################
 Section "$(str_section_exe)" id_section_exe
