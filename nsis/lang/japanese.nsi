@@ -18,6 +18,13 @@ LangString ^SetupCaption     ${LANG_JAPANESE} \
 LangString ^UninstallCaption ${LANG_JAPANESE} \
         "$(^Name) Uninstall"
 
+# Workarounds for NSIS Japanese translation. The messages are too long.
+# These should be better to be fixed by the NSIS upstream.
+LangString ^SpaceAvailable   ${LANG_JAPANESE} \
+        "利用可能なディスク容量："
+LangString ^SpaceRequired ${LANG_JAPANESE} \
+        "必要なディスク容量："
+
 ##############################################################################
 # MUI Configuration Strings                                               {{{1
 ##############################################################################
