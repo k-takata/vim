@@ -68,7 +68,6 @@ SetCompressorDictSize 64
 ManifestDPIAware true
 SetDatablockOptimize on
 RequestExecutionLevel highest
-XPStyle on
 
 !ifdef HAVE_UPX
   !packhdr temp.dat "upx --best --compress-icons=1 temp.dat"
