@@ -512,9 +512,9 @@ Section "$(str_section_vim_rc)" id_section_vimrc
 	${If} ${RunningX64}
 	  SetRegView 64
 	${EndIf}
-	WriteRegStr HKLM "${UNINST_REG_KEY_VIM}" "compat" "$vim_compat_stat"
-	WriteRegStr HKLM "${UNINST_REG_KEY_VIM}" "keyremap" "$vim_keymap_stat"
-	WriteRegStr HKLM "${UNINST_REG_KEY_VIM}" "mouse" "$vim_mouse_stat"
+	WriteRegStr HKLM "${UNINST_REG_KEY_VIM}" "vim_compat" "$vim_compat_stat"
+	WriteRegStr HKLM "${UNINST_REG_KEY_VIM}" "vim_keyremap" "$vim_keymap_stat"
+	WriteRegStr HKLM "${UNINST_REG_KEY_VIM}" "vim_mouse" "$vim_mouse_stat"
 	${If} ${RunningX64}
 	  SetRegView lastused
 	${EndIf}
@@ -717,7 +717,7 @@ Function SetCustom
 
 	# Default selection
 	${If} $vim_compat_stat == ""
-	  ReadRegStr $3 HKLM "${UNINST_REG_KEY_VIM}" "compat"
+	  ReadRegStr $3 HKLM "${UNINST_REG_KEY_VIM}" "vim_compat"
 	${Else}
 	  StrCpy $3 $vim_compat_stat
 	${EndIf}
@@ -746,7 +746,7 @@ Function SetCustom
 
 	# Default selection
 	${If} $vim_keymap_stat == ""
-	  ReadRegStr $3 HKLM "${UNINST_REG_KEY_VIM}" "keyremap"
+	  ReadRegStr $3 HKLM "${UNINST_REG_KEY_VIM}" "vim_keyremap"
 	${Else}
 	  StrCpy $3 $vim_keymap_stat
 	${EndIf}
@@ -772,7 +772,7 @@ Function SetCustom
 
 	# Default selection
 	${If} $vim_mouse_stat == ""
-	  ReadRegStr $3 HKLM "${UNINST_REG_KEY_VIM}" "mouse"
+	  ReadRegStr $3 HKLM "${UNINST_REG_KEY_VIM}" "vim_mouse"
 	${Else}
 	  StrCpy $3 $vim_mouse_stat
 	${EndIf}
