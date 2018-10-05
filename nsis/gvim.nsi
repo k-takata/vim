@@ -848,6 +848,8 @@ FunctionEnd
 
 ##########################################################
 Section "un.$(str_unsection_register)" id_unsection_register
+	SectionIn RO
+
 	# Apparently $INSTDIR is set to the directory where the uninstaller is
 	# created.  Thus the "vim61" directory is included in it.
 	StrCpy $0 "$INSTDIR"
