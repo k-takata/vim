@@ -241,7 +241,7 @@ LangString str_vimrc_page_subtitle ${LANG_ENGLISH} \
     "Choose the settings for enhancement, keyboard and mouse."
 
 LangString str_msg_compat_title    ${LANG_ENGLISH} \
-    " Vi Compatibility "
+    " Vi / Vim behavior "
 LangString str_msg_compat_desc     ${LANG_ENGLISH} \
     "&Compatibility and enhancements"
 LangString str_msg_compat_vi       ${LANG_ENGLISH} \
@@ -254,16 +254,16 @@ LangString str_msg_compat_all      ${LANG_ENGLISH} \
     "Vim with all enhancements (Default)"
 
 LangString str_msg_keymap_title   ${LANG_ENGLISH} \
-    " Key remapping for Windows behavior "
+    " Mappings "
 LangString str_msg_keymap_desc    ${LANG_ENGLISH} \
-    "&Remap a few keys (<C-V>, <C-C>, <C-A>, <C-S>, <C-F>, etc)"
+    "&Remap a few keys (Ctrl-V, Ctrl-C, Ctrl-A, Ctrl-S, Ctrl-F, etc)"
 LangString str_msg_keymap_default ${LANG_ENGLISH} \
     " Do not remap keys (Default)"
 LangString str_msg_keymap_windows ${LANG_ENGLISH} \
     " Remap a few keys"
 
 LangString str_msg_mouse_title   ${LANG_ENGLISH} \
-    " Mouse behavior "
+    " Mouse "
 LangString str_msg_mouse_desc    ${LANG_ENGLISH} \
     "&Behavior of right and left buttons"
 LangString str_msg_mouse_default ${LANG_ENGLISH} \
