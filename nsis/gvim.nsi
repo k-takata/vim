@@ -183,6 +183,47 @@ ReserveFile ${VIMSRC}\installw32.exe
 ##########################################################
 # Functions
 
+# Update the message in the (un)install files page
+# Based on http://nsis.sourceforge.net/DetailUpdate
+!macro _DetailUpdate un
+Function ${un}DetailUpdate
+  Exch $R0
+  Push $R1
+  Push $R2
+  Push $R3
+
+  FindWindow $R2 `#32770` `` $HWNDPARENT
+  GetDlgItem $R1 $R2 1006
+  SendMessage $R1 ${WM_SETTEXT} 0 `STR:$R0`
+  GetDlgItem $R1 $R2 1016
+
+  System::Call *(&t${NSIS_MAX_STRLEN}R0)i.R2
+  System::Call *(i0,i0,i0,i0,i0,iR2,i${NSIS_MAX_STRLEN},i0,i0)i.R3
+
+  !define /ifndef LVM_GETITEMCOUNT 0x1004
+  !define /ifndef LVM_SETITEMTEXT 0x102E
+  SendMessage $R1 ${LVM_GETITEMCOUNT} 0 0 $R0
+  IntOp $R0 $R0 - 1
+  System::Call user32::SendMessage(iR1,i${LVM_SETITEMTEXT},iR0,iR3)
+
+  System::Free $R3
+  System::Free $R2
+
+  Pop $R3
+  Pop $R2
+  Pop $R1
+  Pop $R0
+FunctionEnd
+!macroend
+!insertmacro _DetailUpdate ""
+!insertmacro _DetailUpdate "un."
+!macro DetailUpdate un Text
+  Push `${Text}`
+  Call ${un}DetailUpdate
+!macroend
+!define DetailUpdate `!insertmacro DetailUpdate ""`
+!define un.DetailUpdate `!insertmacro DetailUpdate "un."`
+
 # Get parent directory
 # Share this function both on installer and uninstaller
 !macro GetParent un
@@ -285,6 +326,7 @@ Section "$(str_section_old_ver)" id_section_old_ver
 	# run the install program to check for already installed versions
 	SetOutPath $TEMP
 	File /oname=install.exe ${VIMSRC}\installw32.exe
+	${DetailUpdate} "$(str_msg_wait_uninst)"
 	${Do}
 	  nsExec::Exec "$TEMP\install.exe -uninstall-check"
 	  Pop $3
@@ -652,6 +694,7 @@ SectionEnd
 ##########################################################
 Section -call_install_exe
 	SetOutPath $0
+	${DetailUpdate} "$(str_msg_registering)"
 	nsExec::Exec "$0\install.exe $1"
 	Pop $3
 SectionEnd
@@ -883,6 +926,7 @@ Section "un.$(str_unsection_register)" id_unsection_register
 !endif
 
 	# delete the context menu entry and batch files
+	${un.DetailUpdate} "$(str_msg_unregistering)"
 	nsExec::Exec "$0\uninstal.exe -nsis"
 	Pop $3
 
