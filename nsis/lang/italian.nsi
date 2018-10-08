@@ -230,8 +230,8 @@ LangString str_msg_rm_exe_fail   ${LANG_ITALIAN} \
 LangString str_msg_rm_root_fail  ${LANG_ITALIAN} \
     "AVVISO: Non posso cancellare $\"$vim_install_root$\", non è vuota!"
 
-LangString str_msg_wait_uninst   ${LANG_ITALIAN} \
-    "Waiting the old version to be uninstalled..."
+LangString str_msg_uninstalling  ${LANG_ITALIAN} \
+    "Uninstalling the old version..."
 
 LangString str_msg_registering   ${LANG_ITALIAN} \
     "Registering..."

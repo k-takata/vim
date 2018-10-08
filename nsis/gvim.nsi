@@ -326,7 +326,7 @@ Section "$(str_section_old_ver)" id_section_old_ver
 	# run the install program to check for already installed versions
 	SetOutPath $TEMP
 	File /oname=install.exe ${VIMSRC}\installw32.exe
-	${DetailUpdate} "$(str_msg_wait_uninst)"
+	${DetailUpdate} "$(str_msg_uninstalling)"
 	${Do}
 	  nsExec::Exec "$TEMP\install.exe -uninstall-check"
 	  Pop $3
@@ -725,12 +725,13 @@ Section -post
 	${EndIf}
 !endif
 
-	# Register EstimatedSize.
+	# Register EstimatedSize and AllowSilent.
 	# Other information will be set by the install.exe (dosinst.c).
 	${If} ${RunningX64}
 	  SetRegView 64
 	${EndIf}
 	WriteRegDWORD HKLM "${UNINST_REG_KEY_VIM}" "EstimatedSize" $3
+	WriteRegDWORD HKLM "${UNINST_REG_KEY_VIM}" "AllowSilent" 1
 	${If} ${RunningX64}
 	  SetRegView lastused
 	${EndIf}
@@ -745,6 +746,18 @@ Function SetCustom
 	# Check if a _vimrc should be created
 	${IfNot} ${SectionIsSelected} ${id_section_vimrc}
 	  Abort
+	${EndIf}
+	${If} ${FileExists} "$INSTDIR\_vimrc"
+	  ${If} ${RunningX64}
+	    SetRegView 64
+	  ${EndIf}
+	  ReadRegDWORD $3 HKLM "${UNINST_REG_KEY_VIM}" "AllowSilent"
+	  ${If} ${RunningX64}
+	    SetRegView lastused
+	  ${EndIf}
+	  ${If} $3 <> 0
+	    Abort
+	  ${EndIf}
 	${EndIf}
 
 	!insertmacro MUI_HEADER_TEXT \
@@ -1066,7 +1079,9 @@ Section "un.$(str_unsection_rootdir)" id_unsection_rootdir
 	Call un.GetParent
 	Pop $0
 
-	Delete $0\_vimrc
+	${IfNot} ${Silent}
+	  Delete $0\_vimrc
+	${EndIf}
 	RMDir $0
 SectionEnd
 

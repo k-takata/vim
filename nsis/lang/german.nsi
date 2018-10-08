@@ -221,8 +221,8 @@ LangString str_msg_rm_root_fail  ${LANG_GERMAN} \
     "Achtung: Kann Verzeichnis $\"$vim_install_root$\" nicht entfernen, \
      weil es nicht leer ist!"
 
-LangString str_msg_wait_uninst   ${LANG_GERMAN} \
-    "Waiting the old version to be uninstalled..."
+LangString str_msg_uninstalling  ${LANG_GERMAN} \
+    "Uninstalling the old version..."
 
 LangString str_msg_registering   ${LANG_GERMAN} \
     "Registering..."

@@ -558,6 +558,18 @@ uninstall_check(int skip_question)
 				sprintf(buf, "\"%s\"", temp_string_buffer);
 			    else
 				strcpy(buf, temp_string_buffer);
+			    if (skip_question)
+			    {
+				DWORD	allow_silent = 0;
+				DWORD	bufsize = sizeof(DWORD);
+
+				code = RegQueryValueEx(uninstall_key_handle,
+					"AllowSilent", 0, &value_type,
+					(LPBYTE)&allow_silent,
+					&bufsize);
+				if (code == ERROR_SUCCESS && allow_silent)
+				    strcat(buf, " /S");
+			    }
 			    run_command(buf);
 			}
 
