@@ -24,6 +24,9 @@ LangString ^SpaceAvailable   ${LANG_JAPANESE} \
         "利用可能なディスク容量："
 LangString ^SpaceRequired    ${LANG_JAPANESE} \
         "必要なディスク容量："
+# Fix another NSIS Japanese translation. The access key was missing.
+LangString ^InstallBtn       ${LANG_JAPANESE} \
+        "インストール(&I)"
 
 ##############################################################################
 # MUI Configuration Strings                                               {{{1
