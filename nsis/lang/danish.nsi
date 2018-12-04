@@ -1,4 +1,4 @@
-﻿# vi:set ts=8 sts=4 sw=4 et fdm=marker:
+# vi:set ts=8 sts=4 sw=4 et fdm=marker:
 #
 # danish.nsi: Danish language strings for gvim NSIS installer.
 #
@@ -106,13 +106,11 @@ LangString str_desc_rm_exe          ${LANG_DANISH}     "Fjern alle Vim-eksekverb
 LangString str_ungroup_plugin       ${LANG_DANISH}     "Fjern vimfiles-mappe"
 LangString str_desc_rm_plugin       ${LANG_DANISH}     "Fjern vimfiles-mappen hvis den er tom."
 
-LangString str_unsection_plugin_home ${LANG_DANISH}    "Private"
-LangString str_desc_rm_plugin_home  ${LANG_DANISH} \
-    "Remove the plugin directories from HOME directory."
+LangString str_unsection_plugin_home ${LANG_DANISH}    "Privat"
+LangString str_desc_rm_plugin_home  ${LANG_DANISH}     "Fjern plugin-mapperne fra HOME-mappen."
 
 LangString str_unsection_plugin_vim ${LANG_DANISH}     "Delte"
-LangString str_desc_rm_plugin_vim   ${LANG_DANISH} \
-    "Remove the plugin directories from Vim install directory."
+LangString str_desc_rm_plugin_vim   ${LANG_DANISH}     "Fjern plugin-mapperne fra Vim-installationsmappen."
 
 LangString str_unsection_rootdir    ${LANG_DANISH}     "Fjern Vim-rodmappen"
 LangString str_desc_rm_rootdir      ${LANG_DANISH}     "Fjern Vim-rodmappen. Den indeholder dine Vim-konfigurationsfiler!"
