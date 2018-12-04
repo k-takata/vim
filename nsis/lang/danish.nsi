@@ -1,4 +1,4 @@
-# vi:set ts=8 sts=4 sw=4 et fdm=marker:
+﻿# vi:set ts=8 sts=4 sw=4 et fdm=marker:
 #
 # danish.nsi: Danish language strings for gvim NSIS installer.
 #
