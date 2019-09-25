@@ -32,5 +32,6 @@ source test_sha256.vim
 source test_tabline.vim
 source test_tagcase.vim
 source test_tagfunc.vim
+source test_template_string.vim
 source test_unlet.vim
 source test_wnext.vim
