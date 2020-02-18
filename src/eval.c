@@ -59,8 +59,8 @@ static int eval7(char_u **arg, typval_T *rettv, int evaluate, int want_string);
 static int eval7_leader(typval_T *rettv, char_u *start_leader, char_u **end_leaderp);
 
 static int get_template_string_tv(char_u **arg, typval_T *rettv, int evaluate);
-static int read_template_expr(garray_T *result, char_u **expr, int is_literal_string);
-static int read_template_var(garray_T *result, char_u **expr);
+static int read_template_expr(garray_T *result, char_u **expr, int is_literal_string, int evaluate);
+static int read_template_var(garray_T *result, char_u **expr, int is_literal_string, int evaluate);
 static int is_escaped_quote(int is_literal_string, char_u *quotes);
 static int free_unref_items(int copyID);
 static char_u *make_expanded_name(char_u *in_start, char_u *expr_start, char_u *expr_end, char_u *in_end);
@@ -2623,7 +2623,7 @@ eval7(
 		break;
 
     /*
-     * Template string constant: $"${var}", $'${val}'.
+     * Template string constant: $"${expr}", $'${expr}'.
      * or
      * Environment variable: $VAR.
      */
@@ -3693,7 +3693,7 @@ is_closing_quote(
 }
 
 /*
- * Allocate a variable for $"${var}" and $'${val}' constant.
+ * Allocate a variable for $"${expr}" and $'${expr}' constant.
  * Return OK or FAIL.
  */
     static int
@@ -3730,8 +3730,8 @@ get_template_string_tv(char_u **arg, typval_T *rettv, int evaluate)
 	    // forward to beginning of the template literal
 	    *arg += does_expect_embraced ? 2 : 1;
 	    success = does_expect_embraced
-		? read_template_expr(&result, arg, is_literal_string)
-		: read_template_var(&result, arg);
+		? read_template_expr(&result, arg, is_literal_string, evaluate)
+		: read_template_var(&result, arg, is_literal_string, evaluate);
 	    if (!success)
 	    {
 		ga_clear(&result);
@@ -3759,7 +3759,11 @@ get_template_string_tv(char_u **arg, typval_T *rettv, int evaluate)
     else
     {
 	char_u	*to_free = (char_u *) result.ga_data;
-	int	success = eval1((char_u**) &result.ga_data, rettv, TRUE);
+	int	success;
+
+	success = is_literal_string ?
+	    get_lit_string_tv((char_u**) &result.ga_data, rettv, TRUE) :
+	    get_string_tv((char_u**) &result.ga_data, rettv, TRUE);
 
 	vim_free(to_free);
 	return success;
@@ -3852,7 +3856,11 @@ escape_quotes_in_quote(char_u *x, int is_literal_string)
  * Returns OK when succeed, or returns FAIL.
  */
     static int
-read_template_expr(garray_T *result, char_u **expr, int is_literal_string)
+read_template_expr(
+	garray_T *result,
+	char_u **expr,
+	int is_literal_string,
+	int evaluate)
 {
     char_u	    *expr_head = *expr;
     size_t	    nested_blocks = 0;
@@ -3889,6 +3897,9 @@ read_template_expr(garray_T *result, char_u **expr, int is_literal_string)
 	return FAIL;
     }
 
+    if (!evaluate)
+	return OK;
+
     /*
      * Evaluate the expr
      */
@@ -3918,7 +3929,7 @@ read_template_expr(garray_T *result, char_u **expr, int is_literal_string)
 	if (!success)
 	    return FAIL;
 
-	// Evaluate the lambda call
+	// Escape quotes in the result
 	escaped = escape_quotes_in_quote(var_value.vval.v_string,
 							is_literal_string);
 	ga_concat(result, escaped);
@@ -3933,7 +3944,11 @@ read_template_expr(garray_T *result, char_u **expr, int is_literal_string)
  * Returns OK when succeed, or returns FALSE.
  */
     static int
-read_template_var(garray_T *result, char_u **expr)
+read_template_var(
+	garray_T *result,
+	char_u **expr,
+	int is_literal_string,
+	int evaluate)
 {
     char_u *expr_head = *expr;
 
@@ -3953,6 +3968,12 @@ read_template_var(garray_T *result, char_u **expr)
 	}
     }
 
+    if (!evaluate)
+    {
+	--*expr;
+	return OK;
+    }
+
     /*
      * Evaluate the variable
      */
@@ -3964,6 +3985,7 @@ read_template_var(garray_T *result, char_u **expr)
 	char_u		*to_free_stringified;
 	typval_T	var_value = { VAR_UNKNOWN, VAR_LOCKED, { 0 } };
 	char_u		last = **expr;  // to recover
+	char_u		*escaped;
 
 	// Get a lambda call of STRINGIFY and the var
 	**expr = NUL;
@@ -3981,9 +4003,15 @@ read_template_var(garray_T *result, char_u **expr)
 	    return FAIL;
 	}
 
-	ga_concat(result, var_value.vval.v_string);
+	// Escape quotes in the result
+	escaped = escape_quotes_in_quote(var_value.vval.v_string,
+							is_literal_string);
+	ga_concat(result, escaped);
 	vim_free(var_value.vval.v_string);
-	--*expr;  // To be forwarded by for's continue, look up a last character of the identifier
+	vim_free(escaped);
+	// To be forwarded by for's continue, look up a last character of the
+	// identifier
+	--*expr;
     }
 
     return OK;
