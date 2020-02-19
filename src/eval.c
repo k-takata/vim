@@ -60,7 +60,6 @@ static int eval7_leader(typval_T *rettv, char_u *start_leader, char_u **end_lead
 
 static int get_template_string_tv(char_u **arg, typval_T *rettv, int evaluate);
 static int read_template_expr(garray_T *result, char_u **expr, int is_literal_string, int evaluate);
-static int read_template_var(garray_T *result, char_u **expr, int is_literal_string, int evaluate);
 static int is_escaped_quote(int is_literal_string, char_u *quotes);
 static int free_unref_items(int copyID);
 static char_u *make_expanded_name(char_u *in_start, char_u *expr_start, char_u *expr_end, char_u *in_end);
@@ -3722,16 +3721,16 @@ get_template_string_tv(char_u **arg, typval_T *rettv, int evaluate)
 	    ga_append(&result, (int) **arg);
 	    continue;
 	}
-	else if (**arg == '$')
+	else if (**arg == '$' && *(*arg + 1) == '{')
 	{
 	    int success;
-	    int does_expect_embraced = *(*arg + 1) == '{';
 
-	    // forward to beginning of the template literal
-	    *arg += does_expect_embraced ? 2 : 1;
-	    success = does_expect_embraced
-		? read_template_expr(&result, arg, is_literal_string, evaluate)
-		: read_template_var(&result, arg, is_literal_string, evaluate);
+	    *arg += 2;  // forward to beginning of the template literal
+	    success = read_template_expr(
+		    &result,
+		    arg,
+		    is_literal_string,
+		    evaluate);
 	    if (!success)
 	    {
 		ga_clear(&result);
@@ -3940,83 +3939,6 @@ read_template_expr(
 	ga_concat(result, escaped);
 	vim_free(var_value.vval.v_string);
 	vim_free(escaped);
-    }
-
-    return OK;
-}
-
-/*
- * Returns OK when succeed, or returns FALSE.
- */
-    static int
-read_template_var(
-	garray_T *result,
-	char_u **expr,
-	int is_literal_string,
-	int evaluate)
-{
-    char_u *expr_head = *expr;
-
-    if (!ASCII_ISALPHA(**expr) && **expr != '_')
-    {
-	semsg(_("E450: Illegal template literal: %s"), expr_head);
-	return FAIL;
-    }
-    ++*expr;
-
-    for (; ASCII_ISALNUM(**expr) || (**expr == '_'); MB_PTR_ADV(*expr))
-    {
-	if (**expr == NUL)
-	{
-	    semsg(_("E451: Unterminated template literal: %s"), expr_head);
-	    return FAIL;
-	}
-    }
-
-    if (!evaluate)
-    {
-	--*expr;
-	return OK;
-    }
-
-    /*
-     * Evaluate the variable
-     */
-    {
-	const char_u    *STRINGIFY = (char_u *) "{ x -> (type(x) is v:t_string) ? x : string(x) }(%s)";
-	size_t		stringify_length = STRLEN(STRINGIFY) - 2;  // 2 is %s
-	int		success;
-	char_u		*stringified;
-	char_u		*to_free_stringified;
-	typval_T	var_value = { VAR_UNKNOWN, VAR_LOCKED, { 0 } };
-	char_u		last = **expr;  // to recover
-	char_u		*escaped;
-
-	// Get a lambda call of STRINGIFY and the var
-	**expr = NUL;
-	stringified = (char_u *) alloc(stringify_length + STRLEN(expr_head) + 1);
-	sprintf((char *) stringified, (char *) STRINGIFY, expr_head);
-	to_free_stringified = stringified;
-	**expr = last;
-
-	// Evaluate the lambda call
-	success = eval1(&stringified, &var_value, TRUE);
-	vim_free(to_free_stringified);
-	if (!success)
-	{
-	    vim_free(var_value.vval.v_string);
-	    return FAIL;
-	}
-
-	// Escape quotes in the result
-	escaped = escape_quotes_in_quote(var_value.vval.v_string,
-							is_literal_string);
-	ga_concat(result, escaped);
-	vim_free(var_value.vval.v_string);
-	vim_free(escaped);
-	// To be forwarded by for's continue, look up a last character of the
-	// identifier
-	--*expr;
     }
 
     return OK;
