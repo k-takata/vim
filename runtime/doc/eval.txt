@@ -1410,9 +1410,6 @@ Template string helps you to write complex string. Other rules:
 	                          " not: I am a 'vim'
 	echo $"I am a ${'vim'}"   " I am a vim
 
-	" In template-string, you can write '$' as $$
-	echo $'$$'  " $
-
 	" Escaping in template (non-literal) string
 	echo $"${10} \\ \""   " 10 \ "
 

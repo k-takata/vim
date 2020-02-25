@@ -3699,15 +3699,20 @@ is_closing_quote(
 get_template_string_tv(char_u **arg, typval_T *rettv, int evaluate)
 {
     garray_T	result;  // a string that is not a template string
+    garray_T	ga;
+    typval_T	tv;
     char_u	*arg_orig = *arg;
     char_u	quote = *(*arg + 1);
+    char_u	*p;
     int		is_literal_string = (quote == '\'');
     int		is_skipping_needed;
+    int		success;
 
     *arg += 2;  // $'
 
     ga_init2(&result, 1, 80);
-    ga_append(&result, quote);
+    ga_init2(&ga, 1, 80);
+    ga_append(&ga, quote);
 
     // Continue while it is not NULL and it is not a closing quote.
     for (; (**arg != NUL) &&
@@ -3716,53 +3721,68 @@ get_template_string_tv(char_u **arg, typval_T *rettv, int evaluate)
     {
 	if (is_skipping_needed)
 	{
-	    ga_append(&result, (int) **arg);
+	    ga_append(&ga, (int) **arg);
 	    ++*arg;
-	    ga_append(&result, (int) **arg);
+	    ga_append(&ga, (int) **arg);
 	    continue;
 	}
 	else if (**arg == '$' && *(*arg + 1) == '{')
 	{
-	    int success =
-		eval_next_template_expr_into_result(
-			&result,
-			arg,
-			is_literal_string,
-			evaluate);
-
+	    ga_append(&ga, quote);  // close quotation
+	    p = (char_u*)ga.ga_data;
+	    success = eval1(&p, &tv, evaluate);
 	    if (!success)
 	    {
+		ga_clear(&ga);
 		ga_clear(&result);
 		return FAIL;
 	    }
+	    ga_clear(&ga);
+	    ga_append(&ga, quote);  // open quotation
+	    if (evaluate)
+	    {
+		ga_concat(&result, tv.vval.v_string);
+		clear_tv(&tv);
+	    }
 
+	    success = eval_next_template_expr_into_result(
+			    &result, arg, is_literal_string, evaluate);
+	    if (!success)
+	    {
+		ga_clear(&ga);
+		ga_clear(&result);
+		return FAIL;
+	    }
 	    continue;
 	}
-	ga_append(&result, (int) **arg);
+	ga_append(&ga, (int) **arg);
     }
 
     if (**arg == NUL)
     {
+	ga_clear(&ga);
 	ga_clear(&result);
 	semsg(_("E115: Missing quote: %s"), arg_orig);
 	return FAIL;
     }
     MB_PTR_ADV(*arg);
-    ga_append(&result, quote);
+    ga_append(&ga, quote);
 
-    if (!evaluate)
+    p = (char_u*)ga.ga_data;
+    success = eval1(&p, &tv, evaluate);
+    if (evaluate && success)
     {
-	ga_clear(&result);
-	return OK;
+	ga_concat(&result, tv.vval.v_string);
+	ga_append(&result, '\0');
+	clear_tv(&tv);
+	rettv->v_type = VAR_STRING;
+	rettv->v_lock = 0;
+	rettv->vval.v_string = (char_u*)result.ga_data;
     }
     else
-    {
-	char_u	*to_free = (char_u *) result.ga_data;
-	int	success = eval1((char_u **) &result.ga_data, rettv, TRUE);
-
-	vim_free(to_free);
-	return success;
-    }
+	ga_clear(&result);
+    ga_clear(&ga);
+    return success;
 }
 
 /*
@@ -3850,7 +3870,7 @@ forward_to_end_of_template_expr(char_u **expr, int is_literal_string)
 }
 
 /*
- * Get expr of "${" expr  "}" of source,
+ * Get expr of "${" expr "}" of source,
  * and forward source.
  */
     static char_u*
@@ -3874,49 +3894,19 @@ read_template_expr(char_u **source, int is_literal_string)
 }
 
     static char_u*
-get_stringifying(char_u *expr)
-{
-    char_u	    *result;
-    const char_u    *STRINGIFY =
-	(char_u *) "((type(%s) is v:t_string) ? (%s) : string(%s))";
-    size_t	    stringify_length =
-	STRLEN(STRINGIFY) - (2 * 3);  // 2 is the part of %s
-
-    // Get a lambda call of STRINGIFY and the source
-    result = (char_u *) alloc(stringify_length + (STRLEN(expr) * 3) + 1);
-    sprintf((char *) result, (char *) STRINGIFY, expr, expr, expr);
-    return result;
-}
-
-    static char_u*
 stringify_expr(char_u *expr)
 {
-    const size_t    ENCOSING_QUOTES_NUM = 2;
-    char_u	    *result;
-    char_u	    *stringifying = get_stringifying(expr);
-    char_u	    *to_free_stringifying = stringifying;
-    typval_T	    stringified = { VAR_UNKNOWN, VAR_LOCKED, { 0 } };
-    int		    is_stringifying_success;
+    typval_T	    tv, tv2;
 
-    is_stringifying_success = eval1(&stringifying, &stringified, TRUE);
-    vim_free(to_free_stringifying);
-
-    if (!is_stringifying_success)
-    {
-	vim_free(stringified.vval.v_string);
+    if (eval1(&expr, &tv, TRUE) == FAIL)
 	return NULL;
+    if (tv.v_type != VAR_STRING)
+    {
+	f_string(&tv, &tv2);
+	clear_tv(&tv);
+	tv = tv2;
     }
-    result = (char_u *) alloc(STRLEN(stringified.vval.v_string) + ENCOSING_QUOTES_NUM + 1);
-
-    // Use '"' to make a string correctly.
-    // Vim script's string() constantly shows `'`.
-    // e.g.
-    // string(function("function")) => "function('function')"
-    // string({"x": "x"}) => "{'x': 'x'}"
-    sprintf((char *) result, "\"%s\"", (char *) stringified.vval.v_string);
-    vim_free(stringified.vval.v_string);
-
-    return result;
+    return tv.vval.v_string;
 }
 
 /*
@@ -3941,23 +3931,14 @@ eval_next_template_expr_into_result(
      * Evaluate the source
      */
     {
-	char_u quote = is_literal_string ? '\'' : '"';
-	char_u *stringified = stringify_expr(expr);
-	char_u *to_free_stringified = stringified;
+	char_u	*stringified = stringify_expr(expr);
 
 	vim_free(expr);
 	if (stringified == NULL)
 	    return FAIL;
-
-	ga_append(result, quote);
-	ga_concat(result, (char_u *) "..");
 	ga_concat(result, stringified);
-	ga_concat(result, (char_u *) "..");
-	ga_append(result, quote);
-
-	vim_free(to_free_stringified);
+	vim_free(stringified);
     }
-
     return OK;
 }
 

@@ -65,6 +65,10 @@ func Test_template_string_appendix()
   call assert_equal('''', $'${''''}')
   call assert_equal("", $"${""}")
   call assert_equal("x", $"${"x"}")
+  call assert_equal('a"b', $"${'a"b'}")
+  call assert_equal("a'b", $"${"a'b"}")
+  call assert_equal('a"b', $'${'a"b'}')
+  call assert_equal("a'b", $'${"a'b"}')
 
   " Escaping '}'
   call assert_equal("}", $'${"}"}')
@@ -125,6 +129,6 @@ func Test_template_string_illformed()
     let _ = $'missing closing of ${function(}'
     call assert_report('Should throw an exception.')
   catch
-    call assert_exception('E119:')
+    call assert_exception('E116:')
   endtry
 endfunc
