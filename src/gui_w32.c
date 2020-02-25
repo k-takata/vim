@@ -383,10 +383,11 @@ directx_binddc(void)
     {
 	RECT	rect;
 
-	// Win 10 1809 stopped maintaining off-screen area, so using CopyFromRenderTarget()
-	// for scrolling breaks. Using a layered child window for text area restores the
-	// previous behavior. This isn't supported on earlier than Win 8, but no ill effect
-	// is observed from making these API calls regardless.
+	// Win 10 1809 stopped maintaining off-screen area, so using
+	// CopyFromRenderTarget() for scrolling breaks. Using a layered child
+	// window for text area restores the previous behavior. This isn't
+	// supported on earlier than Win 8, but no ill effect is observed from
+	// making these API calls regardless.
 	SetWindowLongPtr(s_textArea, GWL_EXSTYLE, WS_EX_LAYERED);
 	SetLayeredWindowAttributes(s_textArea, RGB(0, 0, 0), 255, LWA_ALPHA);
 
@@ -1288,6 +1289,9 @@ vim_WindowProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 gui_mch_new_colors(void)
 {
     HBRUSH prevBrush;
+
+    if (s_hwnd == NULL)
+	return;
 
     s_brush = CreateSolidBrush(gui.back_pixel);
     prevBrush = (HBRUSH)SetClassLongPtr(
@@ -5136,7 +5140,22 @@ gui_mch_init(void)
 #endif
     gui.border_width = 0;
 
-    s_brush = CreateSolidBrush(GetSysColor(COLOR_BTNFACE));
+    // Get background/foreground colors from the system
+    gui_mch_def_colors();
+
+    // Get the colors from the "Normal" group (set in syntax.c or in a vimrc
+    // file)
+    set_normal_colors();
+
+    /*
+     * Check that none of the colors are the same as the background color.
+     * Then store the current values as the defaults.
+     */
+    gui_check_colors();
+    gui.def_norm_pixel = gui.norm_pixel;
+    gui.def_back_pixel = gui.back_pixel;
+
+    s_brush = CreateSolidBrush(gui.back_pixel);
 
     // First try using the wide version, so that we can use any title.
     // Otherwise only characters in the active codepage will work.
@@ -5240,7 +5259,7 @@ gui_mch_init(void)
 	wndclassw.hInstance = g_hinst;
 	wndclassw.hIcon = NULL;
 	wndclassw.hCursor = LoadCursor(NULL, IDC_ARROW);
-	wndclassw.hbrBackground = NULL;
+	wndclassw.hbrBackground = CreateSolidBrush(gui.back_pixel);
 	wndclassw.lpszMenuName = NULL;
 	wndclassw.lpszClassName = szTextAreaClassW;
 
@@ -5252,8 +5271,8 @@ gui_mch_init(void)
 	0,
 	szTextAreaClassW, L"Vim text area",
 	WS_CHILD | WS_VISIBLE, 0, 0,
-	100,				// Any value will do for now
-	100,				// Any value will do for now
+	CW_USEDEFAULT,			// Any value will do for now
+	CW_USEDEFAULT,			// Any value will do for now
 	s_hwnd, NULL,
 	g_hinst, NULL);
 
@@ -5279,21 +5298,6 @@ gui_mch_init(void)
 
     // Do we need to bother with this?
     // m_fMouseAvail = GetSystemMetrics(SM_MOUSEPRESENT);
-
-    // Get background/foreground colors from the system
-    gui_mch_def_colors();
-
-    // Get the colors from the "Normal" group (set in syntax.c or in a vimrc
-    // file)
-    set_normal_colors();
-
-    /*
-     * Check that none of the colors are the same as the background color.
-     * Then store the current values as the defaults.
-     */
-    gui_check_colors();
-    gui.def_norm_pixel = gui.norm_pixel;
-    gui.def_back_pixel = gui.back_pixel;
 
     // Get the colors for the highlight groups (gui_check_colors() might have
     // changed them)
