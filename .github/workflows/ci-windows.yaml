@@ -202,8 +202,9 @@ jobs:
         echo %COL_GREEN%vim version:%COL_RESET%
         .\vim --version || exit 1
 
-        rem echo %COL_GREEN%Start testing vim in background.%COL_RESET%
+        echo %COL_GREEN%Start testing vim in background.%COL_RESET%
         rem start cmd /c "cd ..\src2\testdir & nmake -nologo -f Make_dos.mak VIMPROG=..\..\src\vim > nul & echo done>done.txt"
+        start cmd /c "cd ..\src2\testdir & for /L %i in (1,1,50) do nmake -nologo -f Make_dos.mak VIMPROG=..\..\src\vim test_autocmd"
 
         echo %COL_GREEN%Test gvim:%COL_RESET%
         cd testdir
