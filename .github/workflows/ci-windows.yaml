@@ -210,6 +210,7 @@ jobs:
         rem nmake -nologo -f Make_dos.mak VIMPROG=..\gvim || exit 1
         for /L %%i in (1,1,50) do (
           nmake -nologo -f Make_dos.mak VIMPROG=..\gvim test_autocmd || exit 1
+          nmake -nologo -f Make_dos.mak VIMPROG=..\gvim test_compiler || exit 1
         )
         cd ..
         exit 0
