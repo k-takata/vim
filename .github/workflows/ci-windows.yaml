@@ -204,17 +204,15 @@ jobs:
 
         echo %COL_GREEN%Start testing vim in background.%COL_RESET%
         rem start cmd /c "cd ..\src2\testdir & nmake -nologo -f Make_dos.mak VIMPROG=..\..\src\vim > nul & echo done>done.txt"
-        start cmd /c "cd ..\src2\testdir & for /L %i in (1,1,50) do nmake -nologo -f Make_dos.mak VIMPROG=..\..\src\vim test_autocmd"
+        start cmd /c "cd ..\src2\testdir & (for /L %%i in (1,1,50) do nmake -nologo -f Make_dos.mak VIMPROG=..\..\src\vim test_autocmd TEST_FILTER=SessLoadPost) & echo done>done.txt"
 
         echo %COL_GREEN%Test gvim:%COL_RESET%
         cd testdir
         rem nmake -nologo -f Make_dos.mak VIMPROG=..\gvim || exit 1
         for /L %%i in (1,1,50) do (
-          nmake -nologo -f Make_dos.mak VIMPROG=..\gvim test_autocmd || exit 1
-          nmake -nologo -f Make_dos.mak VIMPROG=..\gvim test_compiler || exit 1
+          nmake -nologo -f Make_dos.mak VIMPROG=..\gvim test_autocmd TEST_FILTER=SessLoadPost || exit 1
         )
         cd ..
-        exit 0
 
         echo %COL_GREEN%Wait for vim tests to finish.%COL_RESET%
         cd ..\src2\testdir
