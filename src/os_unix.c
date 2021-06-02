@@ -3343,7 +3343,7 @@ exit_scroll(void)
 	else
 	    out_char('\n');
     }
-    else
+    else if (!is_not_a_term())
     {
 	restore_cterm_colors();		// get original colors back
 	msg_clr_eos_force();		// clear the rest of the display
@@ -3370,9 +3370,12 @@ mch_exit(int r)
     {
 	settmode(TMODE_COOK);
 #ifdef FEAT_TITLE
-	// restore xterm title and icon name
-	mch_restore_title(SAVE_RESTORE_BOTH);
-	term_pop_title(SAVE_RESTORE_BOTH);
+	if (!is_not_a_term())
+	{
+	    // restore xterm title and icon name
+	    mch_restore_title(SAVE_RESTORE_BOTH);
+	    term_pop_title(SAVE_RESTORE_BOTH);
+	}
 #endif
 	/*
 	 * When t_ti is not empty but it doesn't cause swapping terminal
@@ -4772,11 +4775,6 @@ mch_call_shell_fork(
 		    // push stream discipline modules
 		    if (options & SHELL_COOKED)
 			setup_slavepty(pty_slave_fd);
-#  ifdef TIOCSCTTY
-		    // Try to become controlling tty (probably doesn't work,
-		    // unless run by root)
-		    ioctl(pty_slave_fd, TIOCSCTTY, (char *)NULL);
-#  endif
 		}
 # endif
 		set_default_child_environment(FALSE);

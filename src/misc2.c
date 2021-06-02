@@ -1050,7 +1050,6 @@ free_all_mem(void)
     if (entered_free_all_mem)
 	return;
     entered_free_all_mem = TRUE;
-
     // Don't want to trigger autocommands from here on.
     block_autocmds();
 
@@ -2026,8 +2025,9 @@ ga_clear_strings(garray_T *gap)
 {
     int		i;
 
-    for (i = 0; i < gap->ga_len; ++i)
-	vim_free(((char_u **)(gap->ga_data))[i]);
+    if (gap->ga_data != NULL)
+	for (i = 0; i < gap->ga_len; ++i)
+	    vim_free(((char_u **)(gap->ga_data))[i]);
     ga_clear(gap);
 }
 
@@ -2541,7 +2541,7 @@ static struct key_name_entry
     // NOTE: When adding a long name update MAX_KEY_NAME_LEN.
 };
 
-#define KEY_NAMES_TABLE_LEN (sizeof(key_names_table) / sizeof(struct key_name_entry))
+#define KEY_NAMES_TABLE_LEN ARRAY_LENGTH(key_names_table)
 
 /*
  * Return the modifier mask bit (MOD_MASK_*) which corresponds to the given
@@ -2825,7 +2825,7 @@ find_special_key(
 
     // Find end of modifier list
     last_dash = src;
-    for (bp = src + 1; *bp == '-' || vim_isIDc(*bp); bp++)
+    for (bp = src + 1; *bp == '-' || vim_isNormalIDc(*bp); bp++)
     {
 	if (*bp == '-')
 	{
@@ -3120,10 +3120,10 @@ get_special_key_code(char_u *name)
 	for (i = 0; key_names_table[i].name != NULL; i++)
 	{
 	    table_name = key_names_table[i].name;
-	    for (j = 0; vim_isIDc(name[j]) && table_name[j] != NUL; j++)
+	    for (j = 0; vim_isNormalIDc(name[j]) && table_name[j] != NUL; j++)
 		if (TOLOWER_ASC(table_name[j]) != TOLOWER_ASC(name[j]))
 		    break;
-	    if (!vim_isIDc(name[j]) && table_name[j] == NUL)
+	    if (!vim_isNormalIDc(name[j]) && table_name[j] == NUL)
 		return key_names_table[i].key;
 	}
     return 0;
