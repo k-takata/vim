@@ -389,8 +389,8 @@ jobs:
           - { features: HUGE,   toolchain: mingw, VIMDLL: yes, GUI: no,  arch: x64, coverage: yes }
           - { features: NORMAL, toolchain: msvc,  VIMDLL: yes, GUI: no,  arch: x86 }
           - { features: NORMAL, toolchain: mingw, VIMDLL: no,  GUI: yes, arch: x64 }
-          - { features: TINY,   toolchain: msvc,  VIMDLL: yes, GUI: yes, arch: x64 }
-          - { features: TINY,   toolchain: mingw, VIMDLL: no,  GUI: no,  arch: x86 }
+          #- { features: TINY,   toolchain: msvc,  VIMDLL: yes, GUI: yes, arch: x64 }
+          #- { features: TINY,   toolchain: mingw, VIMDLL: no,  GUI: no,  arch: x86 }
 
     steps:
       - name: Initialize
@@ -574,6 +574,14 @@ jobs:
           if "${{ matrix.GUI }}"=="yes" (
             rem nmake -nologo -f Make_mvc.mak VIMPROG=..\gvim || exit 1
             nmake -nologo -f Make_mvc.mak test_channel VIMPROG=..\gvim || exit 1
+            nmake -nologo -f Make_mvc.mak test_channel VIMPROG=..\gvim || exit 1
+            nmake -nologo -f Make_mvc.mak test_channel VIMPROG=..\gvim || exit 1
+            nmake -nologo -f Make_mvc.mak test_channel VIMPROG=..\gvim || exit 1
+            nmake -nologo -f Make_mvc.mak test_channel VIMPROG=..\gvim || exit 1
+            nmake -nologo -f Make_mvc.mak test_mapping VIMPROG=..\gvim || exit 1
+            nmake -nologo -f Make_mvc.mak test_mapping VIMPROG=..\gvim || exit 1
+            nmake -nologo -f Make_mvc.mak test_mapping VIMPROG=..\gvim || exit 1
+            nmake -nologo -f Make_mvc.mak test_mapping VIMPROG=..\gvim || exit 1
             nmake -nologo -f Make_mvc.mak test_mapping VIMPROG=..\gvim || exit 1
           ) else (
             @rem Run only tiny tests.
@@ -594,6 +602,14 @@ jobs:
           if "${{ matrix.GUI }}"=="no" (
             @rem nmake -nologo -f Make_mvc.mak VIMPROG=..\vim || exit 1
             nmake -nologo -f Make_mvc.mak test_channel VIMPROG=..\vim || exit 1
+            nmake -nologo -f Make_mvc.mak test_channel VIMPROG=..\vim || exit 1
+            nmake -nologo -f Make_mvc.mak test_channel VIMPROG=..\vim || exit 1
+            nmake -nologo -f Make_mvc.mak test_channel VIMPROG=..\vim || exit 1
+            nmake -nologo -f Make_mvc.mak test_channel VIMPROG=..\vim || exit 1
+            nmake -nologo -f Make_mvc.mak test_mapping VIMPROG=..\vim || exit 1
+            nmake -nologo -f Make_mvc.mak test_mapping VIMPROG=..\vim || exit 1
+            nmake -nologo -f Make_mvc.mak test_mapping VIMPROG=..\vim || exit 1
+            nmake -nologo -f Make_mvc.mak test_mapping VIMPROG=..\vim || exit 1
             nmake -nologo -f Make_mvc.mak test_mapping VIMPROG=..\vim || exit 1
           ) else (
             @rem Run only tiny tests.
