@@ -51,11 +51,11 @@ static int gui_mswin_get_menu_height(int fix_window);
 #endif
 
 typedef struct keycode_trans_strategy {
-    void (*ptr_on_char) (HWND /*hwnd UNUSED*/, UINT /*cch*/, int /*cRepeat UNUSED*/);
-    void (*ptr_on_sys_char) (HWND /*hwnd UNUSED*/, UINT /*cch*/, int /*cRepeat UNUSED*/);
-    void (*ptr_process_message_usual_key) (UINT /*vk*/, const MSG* /*pmsg*/);
+    void (*ptr_on_char)(HWND /*hwnd UNUSED*/, UINT /*cch*/, int /*cRepeat UNUSED*/);
+    void (*ptr_on_sys_char)(HWND /*hwnd UNUSED*/, UINT /*cch*/, int /*cRepeat UNUSED*/);
+    void (*ptr_process_message_usual_key)(UINT /*vk*/, const MSG* /*pmsg*/);
     int  (*ptr_get_active_modifiers)(void);
-    int  (*is_experimental)(void);
+    BOOL is_experimental;
 } keycode_trans_strategy;
 
 // forward declarations for input instance initializer
@@ -63,14 +63,13 @@ static void _OnChar_experimental(HWND /*hwnd UNUSED*/, UINT /*cch*/, int /*cRepe
 static void _OnSysChar_experimental(HWND /*hwnd UNUSED*/, UINT /*cch*/, int /*cRepeat UNUSED*/);
 static void process_message_usual_key_experimental(UINT /*vk*/, const MSG* /*pmsg*/);
 static int  get_active_modifiers_experimental(void);
-static int  is_experimental_true(void);
 
 keycode_trans_strategy keycode_trans_strategy_experimental = {
       _OnChar_experimental      // ptr_on_char
     , _OnSysChar_experimental // ptr_on_sys_char
     , process_message_usual_key_experimental // ptr_process_message_usual_key
     , get_active_modifiers_experimental
-    , is_experimental_true
+    , TRUE
 };
 
 // forward declarations for input instance initializer
@@ -78,27 +77,16 @@ static void _OnChar_classic(HWND /*hwnd UNUSED*/, UINT /*cch*/, int /*cRepeat UN
 static void _OnSysChar_classic(HWND /*hwnd UNUSED*/, UINT /*cch*/, int /*cRepeat UNUSED*/);
 static void process_message_usual_key_classic(UINT /*vk*/, const MSG* /*pmsg*/);
 static int  get_active_modifiers_classic(void);
-static int  is_experimental_false(void);
 
 keycode_trans_strategy keycode_trans_strategy_classic = {
       _OnChar_classic      // ptr_on_char
     , _OnSysChar_classic // ptr_on_sys_char
     , process_message_usual_key_classic // ptr_process_message_usual_key
     , get_active_modifiers_classic
-    , is_experimental_false
+    , FALSE
 };
 
 keycode_trans_strategy *keycode_trans_strategy_used = NULL;
-
-static int is_experimental_true(void)
-{
-    return 1;
-}
-
-static int is_experimental_false(void)
-{
-    return 0;
-}
 
 /*
  * Initialize the keycode translation strategy.
@@ -2371,7 +2359,7 @@ process_message(void)
 	 * We are at the moment after WM_CHAR with DEAD_KEY_SKIP_ON_CHAR event
 	 * was handled by _WndProc, this keypress we want to process normally
 	 */
-	if (keycode_trans_strategy_used->is_experimental()
+	if (keycode_trans_strategy_used->is_experimental
 		&& dead_key == DEAD_KEY_SKIP_ON_CHAR)
 	{
 	    dead_key = DEAD_KEY_OFF;
@@ -2397,7 +2385,7 @@ process_message(void)
 	     * outputDeadKey_rePost() since we do not wish to reset dead_key
 	     * value.
 	     */
-	    if (keycode_trans_strategy_used->is_experimental() &&
+	    if (keycode_trans_strategy_used->is_experimental &&
 		    dead_key == DEAD_KEY_TRANSIENT_IN_ON_CHAR)
 	    {
 		outputDeadKey_rePost_Ex(msg,
